@@ -61,12 +61,13 @@
 
   /* SAVE STATUS */
   .save-pill{
-    display:inline-flex; align-items:center; gap:6px;
+    display:inline-flex; align-items:center; gap:5px;
     font-size:11.5px; font-weight:700; color:var(--ink-soft);
-    background:#fff; border:2px solid var(--line); border-radius:999px; padding:6px 12px;
+    background:transparent; border:0; border-radius:0; padding:6px 4px;
+    cursor:default; user-select:none;
   }
-  .save-pill .dot{width:8px; height:8px; border-radius:50%; background:var(--ok); flex:none;}
-  .save-pill.warn{border-color:#F0C36D; color:#8A5D00;}
+  .save-pill .dot{width:7px; height:7px; border-radius:50%; background:var(--ok); flex:none;}
+  .save-pill.warn{color:#8A5D00;}
   .save-pill.warn .dot{background:#E0A32E;}
 
   /* STEPPER */
@@ -457,13 +458,13 @@
   .habit-dates{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0;font-size:11px;font-weight:800;color:var(--ink-soft);}
   .habit-dates label{display:flex;align-items:center;gap:5px;}
 
-  /* Friend-share beta privacy notice */
-  .beta-notice{background:#FFF8DE;border:2px solid #E8C95A;border-radius:14px;padding:13px 15px;margin:0 0 16px;box-shadow:0 3px 12px rgba(62,52,99,.08);color:var(--ink);}
+  /* Trusted-circle beta privacy notice */
+  .beta-notice{background:#FFF8DE;border:2px solid #E8C95A;border-radius:14px;padding:13px 15px;margin:0 0 16px;box-shadow:0 3px 12px rgba(62,52,99,.08);color:var(--ink);font-family:'Nunito',sans-serif;}
   .beta-notice-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
-  .beta-notice-title{font-weight:900;margin:0 0 4px;font-size:14px;}
-  .beta-notice p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-soft);font-weight:700;}
-  .beta-notice strong{color:var(--ink);}
-  .beta-notice-dismiss{flex:0 0 auto;border:1px solid #D5B848;background:#fffdf4;color:var(--ink);border-radius:9px;padding:6px 9px;font:800 11px 'Nunito',sans-serif;cursor:pointer;}
+  .beta-notice-title{font-family:'Baloo 2',cursive;font-weight:700;margin:0 0 4px;font-size:15px;color:var(--ink);}
+  .beta-notice p{margin:0;font-family:'Nunito',sans-serif;font-size:12.5px;line-height:1.5;color:var(--ink-soft);font-weight:600;}
+  .beta-notice strong{color:var(--ink);font-weight:700;}
+  .beta-notice-dismiss{flex:0 0 auto;border:1px solid #D5B848;background:#fffdf4;color:var(--ink);border-radius:9px;padding:6px 9px;font-family:'Baloo 2',cursive;font-weight:700;font-size:12px;cursor:pointer;}
   .beta-notice-dismiss:hover{transform:translateY(-1px);}
 
 </style>
@@ -471,15 +472,16 @@
 <body>
 <div class="wrap">
 
-  <div class="beta-notice" id="betaNotice" role="note" aria-label="Friend-share beta privacy notice">
+  <div class="beta-notice" id="betaNotice" role="note" aria-label="Trusted-circle beta privacy notice">
     <div class="beta-notice-top">
       <div>
-        <p class="beta-notice-title">🧪 Friend-Share Beta — Privacy Note</p>
-        <p>You’re a trusted friend I’ve invited to test an early version of this app. 🫶🏼 This beta is hosted on <strong>publicly reachable infrastructure and is not authentication-protected or private.</strong> Please don’t enter sensitive, confidential, financial, medical, identifying, or other information you wouldn’t want exposed. For now, use test/example data when possible. <strong>Enter real data at your own risk.</strong> Thanks for helping me build this thing. 🧠✨</p>
+        <p class="beta-notice-title">🧪 Trusted-Circle Beta — Privacy Note</p>
+        <p>You’re a trusted friend I’ve invited to test an early version of this app. 🫶🏼 This beta is hosted on <strong>publicly reachable infrastructure and is not authentication-protected or private.</strong> Please don’t enter sensitive, confidential, financial, medical, identifying, or other information you wouldn’t want exposed. For now, use test/example data when possible. <strong>Enter real data at your own risk.</strong> Thank you for being a part of this journey! 🧠✨</p>
       </div>
       <button class="beta-notice-dismiss" id="dismissBetaNotice" type="button" aria-label="Dismiss beta privacy notice">Got it ✓</button>
     </div>
   </div>
+
 
   <header>
     <svg class="brain-doodle" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2535,7 +2537,6 @@
   });
 })();
 </script>
-
 <script>
 (function(){
   var btn=document.getElementById('dismissBetaNotice');
@@ -2543,5 +2544,6 @@
   if(btn && notice){ btn.addEventListener('click', function(){ notice.style.display='none'; }); }
 })();
 </script>
+
 </body>
 </html>
