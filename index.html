@@ -457,10 +457,29 @@
   .habit-dates{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0;font-size:11px;font-weight:800;color:var(--ink-soft);}
   .habit-dates label{display:flex;align-items:center;gap:5px;}
 
+  /* Friend-share beta privacy notice */
+  .beta-notice{background:#FFF8DE;border:2px solid #E8C95A;border-radius:14px;padding:13px 15px;margin:0 0 16px;box-shadow:0 3px 12px rgba(62,52,99,.08);color:var(--ink);}
+  .beta-notice-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;}
+  .beta-notice-title{font-weight:900;margin:0 0 4px;font-size:14px;}
+  .beta-notice p{margin:0;font-size:12.5px;line-height:1.5;color:var(--ink-soft);font-weight:700;}
+  .beta-notice strong{color:var(--ink);}
+  .beta-notice-dismiss{flex:0 0 auto;border:1px solid #D5B848;background:#fffdf4;color:var(--ink);border-radius:9px;padding:6px 9px;font:800 11px 'Nunito',sans-serif;cursor:pointer;}
+  .beta-notice-dismiss:hover{transform:translateY(-1px);}
+
 </style>
 </head>
 <body>
 <div class="wrap">
+
+  <div class="beta-notice" id="betaNotice" role="note" aria-label="Friend-share beta privacy notice">
+    <div class="beta-notice-top">
+      <div>
+        <p class="beta-notice-title">🧪 Friend-Share Beta — Privacy Note</p>
+        <p>You’re a trusted friend I’ve invited to test an early version of this app. 🫶🏼 This beta is hosted on <strong>publicly reachable infrastructure and is not authentication-protected or private.</strong> Please don’t enter sensitive, confidential, financial, medical, identifying, or other information you wouldn’t want exposed. For now, use test/example data when possible. <strong>Enter real data at your own risk.</strong> Thanks for helping me build this thing. 🧠✨</p>
+      </div>
+      <button class="beta-notice-dismiss" id="dismissBetaNotice" type="button" aria-label="Dismiss beta privacy notice">Got it ✓</button>
+    </div>
+  </div>
 
   <header>
     <svg class="brain-doodle" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -2514,6 +2533,14 @@
       toast('Welcome back. Picked up where you left off.');
     }
   });
+})();
+</script>
+
+<script>
+(function(){
+  var btn=document.getElementById('dismissBetaNotice');
+  var notice=document.getElementById('betaNotice');
+  if(btn && notice){ btn.addEventListener('click', function(){ notice.style.display='none'; }); }
 })();
 </script>
 </body>
