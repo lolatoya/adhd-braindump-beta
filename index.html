@@ -1,0 +1,2520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Brain Dump &amp; Sort 🧠</title>
+<!-- v8.1: category-kind routing repair + optional Life Area presentation -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:ital,wght@0,400;0,600;0,700;1,600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#EAF0FB;
+    --bg2:#F3ECFA;
+    --ink:#2B2545;
+    --ink-soft:#5B5478;
+    --paper:#FFFDF9;
+    --violet:#7C6FE0;
+    --violet-dark:#5B4FC4;
+    --violet-light:#E8E4FB;
+    --err:#B23A3A;
+    --ok:#2E7D5B;
+    --line:#DAD3EE;
+    --shadow: 0 4px 14px rgba(60,50,110,0.10);
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family:'Nunito', sans-serif;
+    color:var(--ink);
+    background:
+      radial-gradient(circle at 15% 10%, #F7F1FF 0%, transparent 45%),
+      radial-gradient(circle at 85% 0%, #E4F3FB 0%, transparent 40%),
+      linear-gradient(180deg, var(--bg1), var(--bg2));
+    min-height:100vh;
+    padding:24px 16px 60px;
+  }
+  .wrap{max-width:960px; margin:0 auto;}
+
+  /* HEADER */
+  header{text-align:center; margin-bottom:14px;}
+  .brain-doodle{width:64px; height:64px; margin:0 auto 6px; display:block;}
+  h1{
+    font-family:'Baloo 2', cursive;
+    font-size:clamp(28px,5vw,40px);
+    font-weight:800;
+    margin:0 0 4px;
+    color:var(--violet-dark);
+  }
+  .sub{color:var(--ink-soft); font-size:15px; margin:0 0 12px; font-weight:600;}
+
+  .icon-row{display:flex; justify-content:center; gap:10px; margin-bottom:18px; flex-wrap:wrap; align-items:center;}
+  .icon-btn{
+    border:2px solid var(--line); background:#fff; border-radius:12px; padding:8px 16px;
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:13px; color:var(--ink-soft);
+    cursor:pointer; display:inline-flex; align-items:center; gap:6px;
+  }
+  .icon-btn:hover{border-color:var(--violet); color:var(--violet-dark);}
+  .icon-btn:focus-visible, button:focus-visible, input:focus-visible, select:focus-visible{
+    outline:3px solid var(--violet); outline-offset:2px;
+  }
+
+  /* SAVE STATUS */
+  .save-pill{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:11.5px; font-weight:700; color:var(--ink-soft);
+    background:#fff; border:2px solid var(--line); border-radius:999px; padding:6px 12px;
+  }
+  .save-pill .dot{width:8px; height:8px; border-radius:50%; background:var(--ok); flex:none;}
+  .save-pill.warn{border-color:#F0C36D; color:#8A5D00;}
+  .save-pill.warn .dot{background:#E0A32E;}
+
+  /* STEPPER */
+  .stepper{
+    display:flex; justify-content:center; gap:8px; margin:0 auto 24px;
+    max-width:640px; flex-wrap:wrap;
+  }
+  .step-btn{
+    flex:1 1 130px;
+    cursor:pointer;
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:14px;
+    padding:11px 8px; border-radius:16px;
+    background:var(--paper); color:var(--ink-soft);
+    border:2px solid var(--line);
+    transition:transform .15s ease, box-shadow .15s ease, background .2s ease, color .2s ease;
+  }
+  .step-btn.active{
+    background:var(--violet); color:#fff; border-color:var(--violet);
+    box-shadow:var(--shadow);
+    transform:translateY(-2px);
+  }
+  .step-btn.habit-tab, .step-btn.list-tab{border-style:dashed;}
+  .step-btn.list-tab.active{background:#1E6B4A; border-color:#1E6B4A; border-style:solid;}
+  #listsBadge:not(:empty){background:rgba(0,0,0,0.12); border-radius:999px; font-size:10.5px; padding:1px 6px; margin-left:5px;}
+  .step-btn.active #listsBadge:not(:empty){background:rgba(255,255,255,0.28); color:#fff;}
+  .list-picker{display:flex; gap:8px; justify-content:center; flex-wrap:wrap; margin-bottom:14px;}
+  .list-pill{
+    border:2px solid var(--line); background:#fff; border-radius:14px; padding:9px 15px; cursor:pointer;
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:13.5px; color:var(--ink-soft);
+    display:inline-flex; align-items:center; gap:7px;
+  }
+  .list-pill .cnt{background:rgba(0,0,0,0.08); border-radius:999px; font-size:11px; padding:1px 7px;}
+  .list-pill.active{color:#fff;}
+  .list-pill.active .cnt{background:rgba(255,255,255,0.3);}
+  .shop-row{
+    display:flex; align-items:center; gap:11px; padding:11px 8px; border-bottom:1px solid var(--line);
+    font-size:15px; font-weight:700;
+  }
+  .shop-row:last-child{border-bottom:none;}
+  .shop-row.done .shop-text{text-decoration:line-through; opacity:.45;}
+  .shop-row input[type=checkbox]{width:22px; height:22px; accent-color:#1E6B4A; cursor:pointer; flex:none;}
+  .shop-text{flex:1; word-break:break-word; cursor:text;}
+  .list-pointer{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;
+    background:var(--violet-light); border-radius:14px; padding:10px 14px; margin-bottom:14px;
+  }
+  .lp-label{font-family:'Baloo 2',cursive; font-weight:700; font-size:13px; color:var(--violet-dark);}
+  .lp-chip{
+    border:2px solid; border-radius:11px; padding:6px 12px; cursor:pointer;
+    font-family:'Nunito',sans-serif; font-weight:700; font-size:12.5px;
+  }
+  .lp-chip:hover{transform:translateY(-1px);}
+  .shop-foot{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-top:14px; padding-top:12px; border-top:2px dashed var(--line);}
+  .step-btn.habit-tab.active{background:#4B7A2A; border-color:#4B7A2A; border-style:solid;}
+  .step-btn:not(.active):hover{transform:translateY(-1px);}
+  .step-btn:disabled{opacity:.45; cursor:not-allowed; transform:none;}
+
+  .panel{display:none;}
+  .panel.active{display:block; animation:fadeIn .3s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+
+  /* CARD SHELL */
+  .card{
+    background:var(--paper);
+    border-radius:22px;
+    padding:20px 20px 24px;
+    box-shadow:var(--shadow);
+    border:1px solid rgba(124,111,224,0.10);
+    margin-bottom:18px;
+  }
+  .card h2{
+    font-family:'Baloo 2', cursive; font-size:19px; margin:0 0 4px; color:var(--violet-dark);
+  }
+  .card .desc{color:var(--ink-soft); font-size:13.5px; margin:0 0 14px; font-weight:600;}
+
+  /* DUMP INPUT */
+  .dump-row{display:flex; gap:8px; flex-wrap:wrap;}
+  #dumpInput{
+    flex:1 1 220px; min-width:0; padding:13px 16px; border-radius:14px;
+    border:2px solid var(--line); font-family:'Nunito', sans-serif;
+    font-size:15px; font-weight:600; color:var(--ink); background:#fff; outline:none;
+    transition:border-color .15s ease;
+  }
+  #dumpInput:focus{border-color:var(--violet);}
+  select#tagSelect{
+    padding:0 10px; border-radius:14px; border:2px solid var(--line); background:#fff;
+    font-family:'Nunito',sans-serif; font-weight:700; font-size:14px; color:var(--ink-soft); cursor:pointer;
+  }
+  #addBtn{
+    padding:0 22px; border:none; border-radius:14px; background:var(--violet); color:#fff;
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:15px; cursor:pointer;
+    transition:transform .12s ease, background .2s ease;
+  }
+  #addBtn:hover{background:var(--violet-dark);}
+  #addBtn:active{transform:scale(0.96);}
+
+  /* CLOUD */
+  .cloud-field{
+    margin-top:18px; min-height:140px; border:2px dashed var(--line); border-radius:18px;
+    padding:16px; display:flex; flex-wrap:wrap; gap:10px; align-content:flex-start;
+    background:repeating-linear-gradient(135deg, rgba(124,111,224,0.02) 0 12px, transparent 12px 24px);
+  }
+  .cloud-field:empty::before{
+    content:"Your thoughts will float here ✨ start typing above";
+    color:var(--ink-soft); font-weight:600; font-size:14px; font-style:italic;
+    width:100%; text-align:center; align-self:center; padding:20px 0;
+  }
+  .bubble{
+    display:inline-flex; align-items:center; gap:6px; border-radius:999px;
+    padding:7px 10px 7px 7px; font-weight:700; font-size:13.5px;
+    box-shadow:0 2px 0 rgba(60,50,110,0.12); max-width:100%;
+  }
+  .bubble.is-new{animation:pop .3s cubic-bezier(.34,1.56,.64,1);}
+  @keyframes pop{from{transform:scale(0.5); opacity:0;} to{transform:scale(1); opacity:1;}}
+  .bubble .txt{white-space:normal; word-break:break-word;}
+  .bubble .cat-dot{
+    border:none; background:rgba(255,255,255,0.65); color:inherit;
+    width:22px; height:22px; border-radius:50%; font-size:12px; line-height:1;
+    cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center;
+  }
+  .bubble .del{
+    border:none; background:rgba(0,0,0,0.10); color:inherit;
+    width:18px; height:18px; border-radius:50%; font-size:11px; line-height:1;
+    cursor:pointer; flex:none; display:flex; align-items:center; justify-content:center;
+  }
+
+  .go-sort{
+    display:block; margin:18px auto 0; padding:13px 28px;
+    border:none; border-radius:16px; background:var(--violet); color:#fff;
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:15.5px; cursor:pointer;
+    box-shadow:var(--shadow); transition:transform .12s ease;
+  }
+  .go-sort:hover{transform:translateY(-2px);}
+  .go-sort:disabled{opacity:.4; cursor:not-allowed; transform:none;}
+
+  .pool{display:flex; flex-wrap:wrap; gap:10px; margin-top:4px;}
+  .sort-bubble{
+    background:#fff; border:2px solid var(--line); border-radius:16px;
+    padding:9px 10px 8px; font-weight:700; font-size:13.5px;
+    box-shadow:0 2px 6px rgba(60,50,110,0.06); max-width:280px;
+  }
+  .sort-bubble .txt{display:block; margin-bottom:7px; word-break:break-word;}
+  .sort-bubble .cats{display:flex; gap:5px; flex-wrap:wrap;}
+  .cat-btn{border:none; cursor:pointer; border-radius:9px; min-width:30px; height:26px; padding:0 6px; font-size:13px; display:flex; align-items:center; justify-content:center;}
+  .cat-btn:hover{transform:scale(1.12);}
+  #sortBadge:not(:empty){background:var(--err); color:#fff; border-radius:999px; font-size:10.5px; padding:1px 6px; margin-left:5px;}
+  .step-btn.active #sortBadge:not(:empty){background:#fff; color:var(--violet-dark);}
+
+  /* ZONES */
+  .zones{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;}
+  @media (max-width:640px){.zones{grid-template-columns:1fr;}}
+  .zone{border-radius:20px; padding:14px 14px 16px; min-height:110px; box-shadow:var(--shadow); border:2px solid;}
+  .zone-head{display:flex; align-items:center; justify-content:space-between; margin-bottom:8px; gap:6px;}
+  .zone-title{font-family:'Baloo 2', cursive; font-weight:700; font-size:15px; display:flex; align-items:center; gap:6px;}
+  .zone-sub{font-size:11.5px; font-weight:700; opacity:.75; margin:-4px 0 8px 0;}
+  .zone-badge{
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:12px;
+    background:rgba(255,255,255,0.7); border-radius:999px; padding:2px 9px; color:var(--ink);
+  }
+  .zone-list{display:flex; flex-direction:column; gap:7px; min-height:24px;}
+  .zone-empty{font-size:12px; font-weight:700; opacity:.6; font-style:italic; padding:6px 2px;}
+  .zone-item{
+    background:#fff; border-radius:12px; padding:8px 10px;
+    display:flex; align-items:flex-start; gap:8px; font-size:13.5px; font-weight:700;
+    box-shadow:0 1px 4px rgba(60,50,110,0.08); flex-wrap:wrap;
+  }
+  .zone-item.done .zone-item-text{text-decoration:line-through; opacity:.55;}
+  .zone-item input[type=checkbox]{margin-top:2px; accent-color:var(--violet); cursor:pointer;}
+  .zone-item-text{flex:1; word-break:break-word; min-width:80px;}
+  .legend-kind{font-family:'Baloo 2',cursive; font-size:12px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin:14px 0 7px;}
+  .legend-kind:first-child{margin-top:0;}
+  .legend-row{display:flex; align-items:flex-start; gap:10px; padding:7px 9px; border-radius:11px; margin-bottom:5px;}
+  .legend-emoji{font-size:17px; flex:none; width:24px; text-align:center;}
+  .legend-name{font-weight:800; font-size:13.5px;}
+  .legend-desc{font-size:12px; font-weight:600; opacity:.85; margin-top:1px;}
+  .legend-note{font-size:11.5px; font-weight:700; color:var(--ink-soft); font-style:italic; margin:10px 0 0;}
+  .guide-step{display:flex; gap:11px; margin-bottom:15px;}
+  .guide-num{flex:none; width:30px; height:30px; border-radius:50%; background:var(--violet); color:#fff; font-family:'Baloo 2',cursive; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:14px;}
+  .guide-num.alt{background:#4B7A2A;}
+  .guide-num.alt2{background:#1E6B4A;}
+  .guide-title{font-family:'Baloo 2',cursive; font-weight:700; font-size:14.5px; color:var(--violet-dark); margin-bottom:2px;}
+  .guide-body{font-size:13px; font-weight:600; line-height:1.5; color:var(--ink);}
+  .list-clear{border:1px solid var(--line); background:#fff; border-radius:9px; font-size:11.5px; font-weight:700; color:var(--ink-soft); cursor:pointer; padding:4px 9px; margin-top:4px; align-self:flex-start;}
+  .list-clear:hover{border-color:var(--err); color:var(--err);}
+  .why-note{display:block; font-size:10.5px; font-weight:700; color:var(--ink-soft); opacity:.7; margin-top:2px; font-style:italic;}
+  .zone-item .cat-move{
+    border:1px solid rgba(0,0,0,0.12); background:rgba(255,255,255,0.9); color:inherit;
+    border-radius:8px; font-size:12px; padding:2px 3px; cursor:pointer; flex:none; max-width:120px;
+  }
+  .zone-item .mini{border:none; background:transparent; color:var(--ink-soft); cursor:pointer; font-size:13px; flex:none; padding:0 2px;}
+  .zone.drag-over{outline:3px dashed rgba(0,0,0,0.3); outline-offset:2px;}
+  .habit-chip{
+    background:#fff; border-radius:12px; padding:8px 10px; display:flex; align-items:center; gap:8px;
+    font-size:13.5px; font-weight:700; box-shadow:0 1px 4px rgba(60,50,110,0.08); flex-wrap:wrap;
+  }
+  .streak-badge{
+    font-family:'Baloo 2',cursive; font-size:11.5px; font-weight:700; background:#E3F0D9; color:#4B7A2A;
+    border-radius:999px; padding:2px 8px; flex:none;
+  }
+
+  /* STEP 3 LIST */
+  .mode-row{display:flex; justify-content:center; gap:0; margin:0 auto 16px; max-width:320px; background:#fff; border:2px solid var(--line); border-radius:14px; padding:4px;}
+  .mode-btn{
+    flex:1; border:none; background:transparent; cursor:pointer; border-radius:10px; padding:9px 6px;
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:13.5px; color:var(--ink-soft);
+  }
+  .mode-btn.active{background:var(--violet); color:#fff;}
+  .list-controls{display:flex; justify-content:space-between; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px;}
+  .toggle-lbl{display:flex; align-items:center; gap:6px; font-size:13px; font-weight:700; color:var(--ink-soft); cursor:pointer;}
+  .progress-wrap{margin:4px 0 16px;}
+  .progress-top{display:flex; justify-content:space-between; font-size:13px; font-weight:700; color:var(--ink-soft); margin-bottom:6px;}
+  .progress-bar{height:12px; background:var(--violet-light); border-radius:999px; overflow:hidden;}
+  .progress-fill{height:100%; background:linear-gradient(90deg,#7C6FE0,#5B4FC4); border-radius:999px; transition:width .35s ease; width:0%;}
+  .group{margin-bottom:14px; border-radius:18px; overflow:hidden; border:2px solid;}
+  .group-head{
+    display:flex; align-items:center; gap:8px; padding:11px 14px; cursor:pointer;
+    font-family:'Baloo 2',cursive; font-weight:700; font-size:15px; border:none; width:100%; text-align:left;
+  }
+  .group-head .caret{margin-left:auto; font-size:12px; transition:transform .2s ease;}
+  .group.collapsed .caret{transform:rotate(-90deg);}
+  .group.collapsed .group-body{display:none;}
+  .group-body{background:#fff; padding:10px 12px 12px; display:flex; flex-direction:column; gap:7px;}
+  .list-row{
+    display:flex; align-items:flex-start; gap:9px; padding:8px 6px; border-radius:10px;
+    font-size:14px; font-weight:700;
+  }
+  .list-row:hover{background:rgba(124,111,224,0.06);}
+  .list-row.done .list-text{text-decoration:line-through; opacity:.5;}
+  .list-row input[type=checkbox]{width:19px; height:19px; margin-top:1px; accent-color:var(--violet); cursor:pointer; flex:none;}
+  .list-text{flex:1; word-break:break-word; cursor:text;}
+  .list-text-input{
+    flex:1; font-family:'Nunito',sans-serif; font-size:14px; font-weight:700; color:var(--ink);
+    border:2px solid var(--violet); border-radius:8px; padding:4px 8px; min-width:80px;
+  }
+  .row-tools{display:flex; gap:2px; flex:none; opacity:.45;}
+  .list-row:hover .row-tools, .list-row:focus-within .row-tools{opacity:1;}
+  .row-tools button{border:none; background:transparent; cursor:pointer; font-size:12px; color:var(--ink-soft); padding:2px 4px; border-radius:6px;}
+  .row-tools button:hover{background:rgba(0,0,0,0.07);}
+  .row-tools button:disabled{opacity:.25; cursor:not-allowed;}
+
+  /* STATIC VIEW */
+  .static-sheet{background:#fff; border-radius:20px; padding:28px 30px 32px; box-shadow:var(--shadow); border:1px solid var(--line);}
+  .static-sheet h3{font-family:'Baloo 2',cursive; font-size:22px; color:var(--violet-dark); margin:0 0 2px;}
+  .static-date{font-size:12.5px; font-weight:700; color:var(--ink-soft); margin:0 0 20px;}
+  .static-group{margin-bottom:18px;}
+  .static-group-title{font-family:'Baloo 2',cursive; font-size:15px; font-weight:700; margin:0 0 7px; padding-bottom:5px; border-bottom:2px solid var(--line);}
+  .static-item{font-size:14px; font-weight:600; padding:4px 0 4px 2px; line-height:1.5;}
+  .static-item.done{opacity:.5; text-decoration:line-through;}
+  .static-note{font-size:11.5px; font-weight:700; color:var(--ink-soft); margin-top:22px; padding-top:12px; border-top:1px dashed var(--line);}
+
+  /* HABITS */
+  .habit-add-row{display:flex; gap:8px; flex-wrap:wrap; margin-bottom:6px;}
+  #habitInput{
+    flex:1 1 200px; min-width:0; padding:12px 15px; border-radius:14px; border:2px solid var(--line);
+    font-family:'Nunito',sans-serif; font-size:14.5px; font-weight:600; color:var(--ink); background:#fff; outline:none;
+  }
+  #habitInput:focus{border-color:#4B7A2A;}
+  #habitCadence{padding:0 10px; border-radius:14px; border:2px solid var(--line); background:#fff; font-family:'Nunito',sans-serif; font-weight:700; font-size:13.5px; color:var(--ink-soft); cursor:pointer;}
+  #addHabitBtn{padding:0 20px; border:none; border-radius:14px; background:#4B7A2A; color:#fff; font-family:'Baloo 2',cursive; font-weight:700; font-size:14.5px; cursor:pointer;}
+  #addHabitBtn:hover{background:#3C6220;}
+
+  .habit-card{
+    background:#fff; border:2px solid #C9E3B8; border-radius:18px; padding:14px 15px; margin-bottom:11px;
+    box-shadow:0 2px 8px rgba(60,50,110,0.06);
+  }
+  .habit-top{display:flex; align-items:flex-start; gap:9px; flex-wrap:wrap; margin-bottom:11px;}
+  .habit-name{flex:1; font-weight:800; font-size:15px; min-width:120px; word-break:break-word;}
+  .habit-cadence-sel{border:1px solid var(--line); background:#F8FAF5; border-radius:8px; font-size:11.5px; font-weight:700; padding:3px 5px; color:var(--ink-soft); cursor:pointer; flex:none;}
+  .habit-stats{display:flex; gap:7px; flex-wrap:wrap; margin-bottom:11px;}
+  .hstat{background:#F1F7EC; border-radius:10px; padding:6px 11px; text-align:center; min-width:64px;}
+  .hstat-num{font-family:'Baloo 2',cursive; font-weight:800; font-size:16px; color:#4B7A2A; line-height:1.1;}
+  .hstat-lbl{font-size:9.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.03em;}
+  .week-row{display:flex; gap:5px; flex-wrap:wrap;}
+  .day-cell{
+    width:42px; border:2px solid var(--line); background:#fff; border-radius:11px; padding:5px 2px;
+    cursor:pointer; text-align:center; font-family:'Nunito',sans-serif; transition:transform .1s ease;
+  }
+  .day-cell:hover{transform:translateY(-2px);}
+  .day-cell .dow{font-size:9.5px; font-weight:800; color:var(--ink-soft); text-transform:uppercase;}
+  .day-cell .num{font-size:13px; font-weight:800; color:var(--ink);}
+  .day-cell.done{background:#4B7A2A; border-color:#4B7A2A;}
+  .day-cell.done .dow, .day-cell.done .num{color:#fff;}
+  .day-cell.today{border-color:var(--violet); border-width:3px;}
+  .day-cell.off{opacity:.4;}
+  .heat-row{display:flex; gap:3px; flex-wrap:wrap; margin-top:10px;}
+  .heat-dot{width:11px; height:11px; border-radius:3px; background:var(--line);}
+  .heat-dot.on{background:#4B7A2A;}
+  .heat-dot.off{background:#EFEFEF;}
+  .habit-empty{text-align:center; padding:26px 10px; color:var(--ink-soft); font-weight:700; font-size:14px; font-style:italic;}
+
+  /* TIPS + QUOTES */
+  .side-cards{display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-top:6px;}
+  @media (max-width:640px){.side-cards{grid-template-columns:1fr;}}
+  .info-card{
+    border-radius:20px; padding:16px 18px; box-shadow:var(--shadow);
+    min-height:104px; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .info-card.tip{background:linear-gradient(135deg,#FFF6E7,#FFF1D6); border:1px solid #FCE2AE;}
+  .info-card.quote{background:linear-gradient(135deg,#EFEAFB,#E4E9FB); border:1px solid #D6CFF2;}
+  .info-label{font-family:'Baloo 2', cursive; font-weight:700; font-size:12.5px; text-transform:uppercase; letter-spacing:.04em; margin-bottom:6px;}
+  .info-card.tip .info-label{color:#9A6A10;}
+  .info-card.quote .info-label{color:var(--violet-dark);}
+  .info-text{font-size:14.5px; font-weight:700; line-height:1.45; color:var(--ink);}
+  .info-ref{font-size:12px; font-weight:700; color:var(--ink-soft); margin-top:6px;}
+  .info-next{align-self:flex-end; border:none; background:rgba(255,255,255,0.7); border-radius:999px; width:30px; height:30px; cursor:pointer; font-size:15px; margin-top:8px;}
+
+  .footer-actions{display:flex; justify-content:center; gap:10px; margin-top:20px; flex-wrap:wrap;}
+  .ghost-btn{
+    padding:9px 18px; border-radius:12px; border:2px solid var(--line); background:#fff;
+    font-family:'Baloo 2', cursive; font-weight:700; font-size:13.5px; color:var(--ink-soft); cursor:pointer;
+  }
+  .ghost-btn:hover{border-color:var(--violet); color:var(--violet-dark);}
+  .ghost-btn.danger:hover{border-color:var(--err); color:var(--err);}
+
+  /* MODALS */
+  .modal-overlay{position:fixed; inset:0; background:rgba(43,37,69,0.55); display:none; align-items:center; justify-content:center; padding:20px; z-index:50;}
+  .modal-overlay.open{display:flex;}
+  .modal-box{background:var(--paper); border-radius:20px; max-width:480px; width:100%; max-height:85vh; overflow-y:auto; padding:22px 22px 26px; box-shadow:0 12px 40px rgba(43,37,69,0.25);}
+  .modal-head{display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;}
+  .modal-head h2{font-family:'Baloo 2', cursive; color:var(--violet-dark); margin:0; font-size:19px;}
+  .modal-close{border:none; background:var(--violet-light); color:var(--violet-dark); width:28px; height:28px; border-radius:50%; cursor:pointer; font-size:14px; flex:none;}
+
+  .cat-list{display:flex; flex-direction:column; gap:8px; margin-bottom:16px;}
+  .cat-row{display:flex; align-items:center; gap:8px; padding:8px 10px; border-radius:12px; font-weight:700; font-size:13.5px;}
+  .cat-row .swatch{width:14px; height:14px; border-radius:50%; flex:none;}
+  .cat-row .lbl{flex:1;}
+  .cat-row button{border:none; background:rgba(0,0,0,0.08); border-radius:8px; width:26px; height:26px; cursor:pointer; font-size:12px; flex:none;}
+  .kind-tag{font-size:9.5px; font-weight:800; background:rgba(255,255,255,0.75); border-radius:999px; padding:2px 7px; text-transform:uppercase; letter-spacing:.03em; flex:none;}
+
+  .admin-form{display:flex; flex-direction:column; gap:9px; border-top:2px dashed var(--line); padding-top:14px; margin-top:4px;}
+  .admin-form label{font-size:12px; font-weight:700; color:var(--ink-soft);}
+  .admin-form input[type=text], .admin-form select{
+    padding:9px 11px; border-radius:10px; border:2px solid var(--line);
+    font-family:'Nunito',sans-serif; font-size:13.5px; font-weight:600; width:100%; background:#fff;
+  }
+  .form-row{display:flex; gap:8px;}
+  .form-row > div:first-child{flex:0 0 70px;}
+  .form-row > div:last-child{flex:1;}
+  .default-row{display:flex; align-items:center; gap:6px; font-weight:700; font-size:13px;}
+  .default-row input{width:auto;}
+  .save-cat-btn{padding:11px; border:none; border-radius:12px; background:var(--violet); color:#fff; font-family:'Baloo 2', cursive; font-weight:700; cursor:pointer; font-size:14px;}
+  .theme-swatches{display:flex; gap:6px; flex-wrap:wrap;}
+  .theme-dot{width:26px; height:26px; border-radius:50%; cursor:pointer; border:3px solid transparent; padding:0;}
+  .theme-dot.selected{border-color:var(--ink);}
+  .form-error{color:var(--err); font-size:12px; font-weight:700; display:none;}
+  .hint{font-size:11.5px; font-weight:600; color:var(--ink-soft); font-style:italic; margin:-4px 0 0;}
+
+  .profile-form{display:flex; flex-direction:column; gap:10px;}
+  .avatar-picker{display:flex; gap:6px; flex-wrap:wrap;}
+  .avatar-opt{font-size:19px; background:#fff; border:2px solid var(--line); border-radius:10px; width:38px; height:38px; cursor:pointer;}
+  .avatar-opt.selected{border-color:var(--violet); background:var(--violet-light);}
+  .stat-grid{display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin-top:4px;}
+  .stat-box{background:var(--violet-light); border-radius:12px; padding:10px 4px; text-align:center;}
+  .stat-num{font-family:'Baloo 2', cursive; font-weight:800; font-size:18px; color:var(--violet-dark);}
+  .stat-lbl{font-size:9.5px; font-weight:700; color:var(--ink-soft);}
+  .data-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .data-row .ghost-btn{flex:1;}
+
+  /* TOAST */
+  .toast-stack{position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:80; display:flex; flex-direction:column; gap:8px; align-items:center; pointer-events:none;}
+  .toast{
+    background:var(--ink); color:#fff; border-radius:14px; padding:11px 18px;
+    font-weight:700; font-size:13.5px; box-shadow:0 6px 20px rgba(43,37,69,0.3);
+    animation:toastIn .25s ease;
+  }
+  @keyframes toastIn{from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);}}
+
+  .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+
+  @media print{
+    body{background:#fff; padding:0;}
+    header, .stepper, .icon-row, .mode-row, .footer-actions, .side-cards, .toast-stack, .no-print{display:none !important;}
+    .static-sheet{box-shadow:none; border:none; padding:0; border-radius:0;}
+    .static-item.done{opacity:1;}
+  }
+
+  .date-filter-label{display:flex;align-items:center;gap:8px;margin-top:9px;font-size:12px;font-weight:800;color:var(--ink-soft);}
+  .date-filter-label input,.task-detail-input,.task-detail-notes,.habit-date-input{border:2px solid var(--line);border-radius:9px;padding:6px 8px;font-family:'Nunito',sans-serif;background:#fff;color:var(--ink);}
+  .task-detail-wrap{display:grid;grid-template-columns:minmax(150px,1fr) minmax(120px,180px);gap:7px;width:100%;margin:5px 0;}
+  .task-detail-notes{grid-column:1/-1;min-height:54px;resize:vertical;}
+  .task-meta{font-size:11px;color:var(--ink-soft);font-weight:700;margin-left:7px;}
+  .emoji-presets{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px;}
+  .emoji-preset{border:1px solid var(--line);background:var(--paper);border-radius:8px;padding:4px 6px;cursor:pointer;font-size:17px;}
+  .habit-dates{display:flex;gap:7px;flex-wrap:wrap;margin:8px 0;font-size:11px;font-weight:800;color:var(--ink-soft);}
+  .habit-dates label{display:flex;align-items:center;gap:5px;}
+
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <svg class="brain-doodle" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M20 14c-6 0-9 5-8 9-4 2-5 8-1 11-2 5 2 10 7 10 1 4 5 6 9 5 3 3 8 3 11 0 5 1 9-4 8-8 4-2 5-8 2-11 2-5-2-10-7-10-1-3-4-5-8-5-2 0-3 0-4 1-3-2-6-2-9-2z" fill="#E8E4FB" stroke="#7C6FE0" stroke-width="2" stroke-linejoin="round"/>
+      <path d="M24 22c2 2 2 5 0 7M32 20v22M40 23c-2 2-2 5 0 7M22 34c3 1 5 1 8-1" stroke="#7C6FE0" stroke-width="1.6" stroke-linecap="round"/>
+    </svg>
+    <h1>Brain Dump &amp; Sort</h1>
+    <p class="sub" id="subGreeting">Dump it. Sort it. Do it.</p>
+    <div class="icon-row">
+      <button class="icon-btn" id="openProfileBtn">👤 Profile</button>
+      <button class="icon-btn" id="openGuideBtn">❓ How this works</button>
+      <button class="icon-btn" id="openAdminBtn">⚙️ Manage categories</button>
+      <span class="save-pill" id="savePill"><span class="dot"></span><span id="saveText">Saved</span></span>
+    </div>
+  </header>
+
+  <div class="stepper" role="tablist">
+    <button class="step-btn active" id="tabDump" role="tab">🌀 1 · Dump</button>
+    <button class="step-btn" id="tabSort" role="tab" disabled>🗂️ 2 · Sort<span id="sortBadge"></span></button>
+    <button class="step-btn" id="tabList" role="tab" disabled>✅ 3 · The List</button>
+    <button class="step-btn list-tab" id="tabLists" role="tab">🛒 Lists<span id="listsBadge"></span></button>
+    <button class="step-btn habit-tab" id="tabHabits" role="tab">🔁 Habits</button>
+  </div>
+
+  <!-- STEP 1 -->
+  <div class="panel active" id="panelDump" role="tabpanel">
+    <div class="card">
+      <h2>Let it all out</h2>
+      <p class="desc">No filter, no order, no judgment. Type one thought, hit add, repeat. Clear time words like "today" or "someday" get sorted for you. Everything else stays grey and waits for you in step 2, because a wrong guess is worse than no guess.</p>
+      <div class="dump-row">
+        <label class="sr-only" for="dumpInput">Type a thought</label>
+        <input id="dumpInput" type="text" placeholder="e.g. call the vet about Biscuit's checkup" maxlength="140" spellcheck="true">
+        <label class="sr-only" for="tagSelect">Life area (optional)</label>
+        <select id="tagSelect" title="Life area (optional)">
+          <option value="">Life area (optional)</option>
+          <option value="✨ other">✨ Other</option>
+          <option value="💼 work">💼 Work</option>
+          <option value="🏠 home">🏠 Home</option>
+          <option value="🎯 goals">🎯 Goals</option>
+          <option value="❤️ love">❤️ Love</option>
+          <option value="🐕 dogs">🐕 Dogs</option>
+          <option value="👪 family">👪 Family</option>
+          <option value="💪 fitness">💪 Fitness</option>
+          <option value="🌱 health">🌱 Health</option>
+          <option value="📝 notes">📝 Notes</option>
+          <option value="🔮 future">🔮 Future</option>
+        </select>
+        <button id="addBtn">Add +</button>
+        <div class="life-area-hint" style="flex-basis:100%;font-size:11.5px;color:var(--ink-soft);font-weight:600;margin-top:-2px;">Life area is optional. It describes what part of life this belongs to; it does not decide where the item is routed.</div>
+      </div>
+      <div class="cloud-field" id="cloudField"></div>
+      <button class="go-sort" id="goSortBtn" disabled>Brain's empty, let's sort it 🗂️</button>
+    </div>
+
+    <div class="side-cards">
+      <div class="info-card tip">
+        <div><div class="info-label">🌟 ADHD tip</div><div class="info-text" id="tipText"></div></div>
+        <button class="info-next" id="tipNext" aria-label="Show next tip">→</button>
+      </div>
+      <div class="info-card quote">
+        <div><div class="info-label">💛 a little encouragement</div><div class="info-text" id="quoteText"></div><div class="info-ref" id="quoteRef"></div></div>
+        <button class="info-next" id="quoteNext" aria-label="Show next quote">→</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2 -->
+  <div class="panel" id="panelSort" role="tabpanel">
+    <p class="desc" style="margin:-4px 0 14px; text-align:center;">Give each thought a home. Grey ones come first, then check that the guesses landed right.</p>
+    <div class="card" id="unsortedCard" style="display:none;">
+      <div class="list-controls">
+        <div>
+          <h2 style="margin-bottom:2px;">Needs a home <span class="zone-badge" id="unsortedCount">0</span></h2>
+          <p class="desc" style="margin:0;">These had no clear signal, so nothing was guessed for you. Tap a bucket.</p>
+        </div>
+        <div style="display:flex; gap:6px; align-items:center; flex-wrap:wrap;">
+          <label class="sr-only" for="bulkTarget">Send all to</label>
+          <select id="bulkTarget" class="cat-move" style="max-width:160px;"></select>
+          <button class="ghost-btn" id="bulkBtn">Send all →</button>
+        </div>
+      </div>
+      <div class="pool" id="pool"></div>
+    </div>
+    <p class="desc" style="margin:-4px 0 10px; text-align:center;">Wrong spot? Use the dropdown on any item, or drag it between zones. Every move teaches the sorting a little.</p>
+    <div class="card" style="padding:0; overflow:hidden; margin-bottom:14px;">
+      <button class="group-head" id="legendToggle" style="background:var(--violet-light); color:var(--violet-dark); font-size:14px;" aria-expanded="false">
+        <span>🗝️ What the icons mean</span><span class="caret" style="transform:rotate(-90deg)">▼</span>
+      </button>
+      <div id="legendBody" style="display:none; padding:14px 16px 16px;"></div>
+    </div>
+    <div class="zones" id="zonesGrid"></div>
+    <button class="go-sort" id="goListBtn">Looks right, show me the list ✅</button>
+  </div>
+
+  <!-- STEP 3 -->
+  <div class="panel" id="panelList" role="tabpanel">
+    <p class="desc" style="margin:-4px 0 12px; text-align:center;"><strong>Interactive</strong> to work through it. <strong>Static</strong> to print it, copy it, or take it to the store.</p>
+    <div class="mode-row">
+      <button class="mode-btn active" id="modeInteractive">✨ Interactive</button>
+      <button class="mode-btn" id="modeStatic">📄 Static</button>
+    </div>
+
+    <div id="interactiveView">
+      <div class="card">
+        <div class="list-controls">
+          <div>
+            <h2 style="margin-bottom:2px;" id="dailyViewTitle">Today's List</h2>
+            <p class="desc" style="margin:0;">Check things off. Tap any line to edit details.</p>
+            <label class="date-filter-label" for="dailyDate">Date <input type="date" id="dailyDate"></label>
+          </div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+            <label class="toggle-lbl"><input type="checkbox" id="hideDone"> Hide finished</label>
+            <label class="toggle-lbl"><input type="checkbox" id="showArchived"> Show archived</label>
+          </div>
+        </div>
+        <div class="progress-wrap">
+          <div class="progress-top"><span id="progLabel">0 of 0 done</span><span id="progPct">0%</span></div>
+          <div class="progress-bar"><div class="progress-fill" id="progFill"></div></div>
+        </div>
+        <div id="listGroups"></div>
+      </div>
+    </div>
+
+    <div id="staticView" style="display:none;">
+      <div class="footer-actions no-print" style="margin:0 0 14px;">
+        <label class="toggle-lbl" id="includeListsWrap" style="display:none;">
+          <input type="checkbox" id="includeLists"> Include my lists
+        </label>
+        <button class="ghost-btn" id="copyListBtn">📋 Copy as text</button>
+        <button class="ghost-btn" id="printListBtn">🖨️ Print</button>
+      </div>
+      <div class="static-sheet" id="staticSheet"></div>
+    </div>
+  </div>
+
+  <!-- LISTS -->
+  <div class="panel" id="panelLists" role="tabpanel">
+    <p class="desc" style="margin:-4px 0 14px; text-align:center;">Lists have no priority and never expire. Add straight to one here, or dump a thought in step 1 and let it land.</p>
+    <div class="list-picker" id="listPicker"></div>
+    <div class="card" id="listAddCard">
+      <div class="habit-add-row">
+        <label class="sr-only" for="listInput">Add an item</label>
+        <input id="listInput" type="text" placeholder="Add an item" maxlength="140" spellcheck="true">
+        <button id="addListBtn">Add +</button>
+      </div>
+    </div>
+    <div class="mode-row">
+      <button class="mode-btn active" id="listModeInteractive">✨ Interactive</button>
+      <button class="mode-btn" id="listModeStatic">📄 Static</button>
+    </div>
+    <div id="listsInteractive"></div>
+    <div id="listsStatic" style="display:none;">
+      <div class="footer-actions no-print" style="margin:0 0 14px;">
+        <button class="ghost-btn" id="copyShopBtn">📋 Copy as text</button>
+        <button class="ghost-btn" id="printShopBtn">🖨️ Print</button>
+      </div>
+      <div class="static-sheet" id="shopSheet"></div>
+    </div>
+  </div>
+
+  <!-- HABITS -->
+  <div class="panel" id="panelHabits" role="tabpanel">
+    <div class="card">
+      <h2>Habits</h2>
+      <p class="desc">Habits don't get finished, they get repeated, so they live outside the three steps. Tap any day to log it. Streaks count consecutive days you were meant to show up, and missing today won't break one until tomorrow. Type "read every night" in step 1 and it lands here automatically.</p>
+      <div class="habit-add-row">
+        <label class="sr-only" for="habitInput">New habit</label>
+        <input id="habitInput" type="text" placeholder="e.g. 10 minutes of reading" maxlength="140" spellcheck="true">
+        <label class="sr-only" for="habitCadence">How often</label>
+        <select id="habitCadence">
+          <option value="daily">Every day</option>
+          <option value="weekdays">Weekdays</option>
+          <option value="weekly">Once a week</option>
+        </select>
+        <button id="addHabitBtn">Add 🔁</button>
+      </div>
+    </div>
+    <label class="toggle-lbl" style="margin:10px 0;display:inline-flex;"><input type="checkbox" id="showArchivedHabits"> Show archived habits</label>
+    <div id="habitList"></div>
+  </div>
+
+  <div class="footer-actions no-print">
+    <button class="ghost-btn" id="backToDump">↩ Back to dumping</button>
+    <button class="ghost-btn danger" id="resetAll">🗑️ Clear everything</button>
+  </div>
+
+</div>
+
+<!-- PROFILE MODAL -->
+<div class="modal-overlay" id="profileModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>Your profile</h2><button class="modal-close" data-close="profileModal" aria-label="Close">✕</button></div>
+    <div class="profile-form">
+      <div>
+        <label for="profileNameInput" style="font-size:12px;font-weight:700;color:var(--ink-soft);">What should we call you?</label>
+        <input type="text" id="profileNameInput" placeholder="Your name" maxlength="30" style="width:100%; margin-top:5px; padding:9px 11px; border-radius:10px; border:2px solid var(--line); font-family:'Nunito',sans-serif; font-weight:600;">
+      </div>
+      <div>
+        <label style="font-size:12px;font-weight:700;color:var(--ink-soft);">Pick an avatar</label>
+        <div class="avatar-picker" id="avatarPicker" style="margin-top:5px;"></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-box"><div class="stat-num" id="statTotal">0</div><div class="stat-lbl">dumped</div></div>
+        <div class="stat-box"><div class="stat-num" id="statActive">0</div><div class="stat-lbl">active</div></div>
+        <div class="stat-box"><div class="stat-num" id="statDone">0</div><div class="stat-lbl">done</div></div>
+        <div class="stat-box"><div class="stat-num" id="statHabits">0</div><div class="stat-lbl">habits</div></div>
+      </div>
+      <button class="save-cat-btn" id="saveProfileBtn">Save profile</button>
+      <div style="border-top:2px dashed var(--line); padding-top:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--ink-soft);">Your data</label>
+        <p class="hint" id="storageNote" style="margin:4px 0 9px;"></p>
+        <div class="data-row">
+          <button class="ghost-btn" id="exportBtn">⬇ Download backup</button>
+          <button class="ghost-btn" id="importBtn">⬆ Restore backup</button>
+        </div>
+      </div>
+      <div style="border-top:2px dashed var(--line); padding-top:14px;">
+        <label style="font-size:12px;font-weight:700;color:var(--ink-soft);">What sorting has picked up</label>
+        <p class="hint" id="learnedNote" style="margin:4px 0 9px;"></p>
+        <button class="ghost-btn" id="forgetBtn" style="width:100%;">🧹 Forget what it learned</button>
+        <input type="file" id="importFile" accept="application/json,.json" style="display:none;">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GUIDE MODAL -->
+<div class="modal-overlay" id="guideModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>How this works</h2><button class="modal-close" data-close="guideModal" aria-label="Close">✕</button></div>
+    <p class="desc" style="margin-top:-4px;">Four sections. The first three run in order, Habits sits on its own.</p>
+
+    <div class="guide-step">
+      <div class="guide-num">1</div>
+      <div>
+        <div class="guide-title">🌀 Dump</div>
+        <div class="guide-body">Type whatever is rattling around, one thought at a time. Don't organise, don't judge, just empty it out. Clear signals get sorted for you as they land: "today" goes Urgent, "every morning" becomes a Habit, and "milk" joins Grocery. Category kind controls behavior: list categories route to Lists, habit categories route to Habits, and priority categories stay in the task flow. Everything else stays grey on purpose, because a wrong guess costs you more than no guess.</div>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">2</div>
+      <div>
+        <div class="guide-title">🗂️ Sort</div>
+        <div class="guide-body">Anything that came back grey waits in <strong>Needs a home</strong> at the top. Tap a bucket, or use <em>Send all</em> if you just want them somewhere. Below that, every bucket shows what landed in it and why. Drag between zones or use the dropdown to correct anything. Corrections teach the sorting, so the same kind of thought lands better next time. Open <strong>What the icons mean</strong> for the full key.</div>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num">3</div>
+      <div>
+        <div class="guide-title">✅ The list</div>
+        <div class="guide-body"><strong>Interactive</strong> is for working: check things off, tap any line to edit it, reorder with the arrows, hide what's finished. Today's habits sit at the top, and ticking one logs the day. <strong>Static</strong> is for leaving: a clean sheet you can print or copy as plain text to paste into an email. This step covers tasks only, so twelve grocery items can't bury your three real priorities. A reminder chip appears at the top when a list has items waiting. If you'd rather print everything on one page, tick <strong>Include my lists</strong> in the static view and they get appended after your tasks.</div>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num alt2">🛒</div>
+      <div>
+        <div class="guide-title">Lists</div>
+        <div class="guide-body">Grocery and Shopping sit outside the numbered steps for the same reason Habits do: a list item has no priority. Milk isn't urgent or important, it's just something to grab. Pick a list with the pills at the top, add straight to it, then use <strong>Interactive</strong> while you shop and <strong>Static</strong> to print or copy the list to take with you. When you're home, <em>Clear checked</em> sweeps everything you got in one go. Anything you type in step 1 that reads like food lands in Grocery on its own.</div>
+      </div>
+    </div>
+
+    <div class="guide-step">
+      <div class="guide-num alt">🔁</div>
+      <div>
+        <div class="guide-title">Habits</div>
+        <div class="guide-body">Habits aren't tasks, so they don't live in the three steps. A task gets finished and leaves. A habit repeats forever, so it gets a streak instead of a checkbox. Tap any day in the row to log it, change how often it should happen with the dropdown, and watch the last four weeks in the dot strip underneath. Missing today doesn't break your streak until tomorrow. Add one here directly, or type something like "stretch every morning" in step 1 and it lands here on its own.</div>
+      </div>
+    </div>
+
+    <div style="border-top:2px dashed var(--line); padding-top:13px; margin-top:4px;">
+      <div class="guide-title" style="margin-bottom:5px;">🗝️ The icons</div>
+      <div id="guideLegend"></div>
+    </div>
+
+    <p class="legend-note" style="margin-top:16px;">Everything saves as you go. The pill at the top tells you where. Profile has export and import if you want a copy.</p>
+  </div>
+</div>
+
+<!-- ADMIN MODAL -->
+<div class="modal-overlay" id="adminModal">
+  <div class="modal-box">
+    <div class="modal-head"><h2>Manage categories</h2><button class="modal-close" data-close="adminModal" aria-label="Close">✕</button></div>
+    <p class="desc" style="margin-top:-4px;">Priority buckets answer "when do I do this." A habit bucket is different: anything sorted there becomes a tracked routine instead of a task.</p>
+    <div class="cat-list" id="catList"></div>
+    <div class="admin-form">
+      <div class="form-row">
+        <div>
+          <label for="catEmojiInput">Emoji</label>
+          <input type="text" id="catEmojiInput" maxlength="8" placeholder="🏷️">
+          <div class="emoji-presets" id="emojiPresets" aria-label="Quick emoji choices"></div>
+        </div>
+        <div>
+          <label for="catLabelInput">Name</label>
+          <input type="text" id="catLabelInput" placeholder="e.g. Waiting on someone" maxlength="24">
+        </div>
+      </div>
+      <div>
+        <label for="catKindSelect">Behaves like</label>
+        <select id="catKindSelect">
+          <option value="priority">A priority bucket (tasks that get finished)</option>
+          <option value="list">A list (grocery, shopping, anything you check off in bulk)</option>
+          <option value="habit">A habit bucket (routines that repeat)</option>
+        </select>
+      </div>
+      <div>
+        <label for="catSubInput">Short description (optional)</label>
+        <input type="text" id="catSubInput" placeholder="When does something belong here?" maxlength="60">
+      </div>
+      <div>
+        <label for="catKeywordsInput">Auto-sort keywords (comma separated, optional)</label>
+        <input type="text" id="catKeywordsInput" placeholder="e.g. waiting, blocked, pending">
+        <p class="hint">Matched as whole words, so "due" won't trigger on "produce."</p>
+      </div>
+      <div>
+        <label>Color</label>
+        <div class="theme-swatches" id="themeSwatches" style="margin-top:5px;"></div>
+      </div>
+      <p class="hint">Thoughts that match no keywords aren't guessed at. They wait in "Needs a home" in step 2.</p>
+      <div class="form-error" id="catFormError">Give it a name first.</div>
+      <button class="save-cat-btn" id="saveCatBtn">Add category</button>
+      <button class="ghost-btn" id="resetCatsBtn" type="button">Reset to defaults</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast-stack" id="toastStack" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* =========================================================
+     STORAGE ADAPTER
+     One seam between the app and wherever data lives.
+     Swap this module for an API client and nothing else changes.
+     ========================================================= */
+  var Store = (function(){
+    var KEY = 'braindump:state:v2';
+    var mode = 'memory';
+    var mem = null;
+    var timer = null;
+
+    function detect(){
+      if (typeof window !== 'undefined' && window.storage && typeof window.storage.get === 'function') return 'widget';
+      try {
+        var k='__bd_test__';
+        window.localStorage.setItem(k,'1');
+        window.localStorage.removeItem(k);
+        return 'local';
+      } catch(e){ return 'memory'; }
+    }
+
+    function load(cb){
+      mode = detect();
+      if(mode==='widget'){
+        window.storage.get(KEY, false).then(function(res){
+          cb(res && res.value ? safeParse(res.value) : null);
+        }).catch(function(){ cb(null); });
+        return;
+      }
+      if(mode==='local'){
+        cb(safeParse(window.localStorage.getItem(KEY)));
+        return;
+      }
+      cb(mem);
+    }
+
+    function safeParse(s){
+      if(!s) return null;
+      try { return JSON.parse(s); } catch(e){ return null; }
+    }
+
+    function writeNow(state, cb){
+      var json = JSON.stringify(state);
+      if(mode==='widget'){
+        window.storage.set(KEY, json, false)
+          .then(function(){ cb(true); })
+          .catch(function(){ cb(false); });
+        return;
+      }
+      if(mode==='local'){
+        try { window.localStorage.setItem(KEY, json); cb(true); }
+        catch(e){ cb(false); }
+        return;
+      }
+      mem = state; cb(true);
+    }
+
+    function save(state, onStatus){
+      onStatus('saving');
+      clearTimeout(timer);
+      timer = setTimeout(function(){
+        writeNow(state, function(ok){ onStatus(ok ? 'saved' : 'error'); });
+      }, 350);
+    }
+
+    function clear(cb){
+      if(mode==='widget'){ window.storage.delete(KEY, false).then(function(){cb();}).catch(function(){cb();}); return; }
+      if(mode==='local'){ try{ window.localStorage.removeItem(KEY); }catch(e){} cb(); return; }
+      mem = null; cb();
+    }
+
+    return { load:load, save:save, clear:clear, getMode:function(){ return mode; } };
+  })();
+
+  /* =========================================================
+     DATA MODEL
+     ========================================================= */
+  var SCHEMA_VERSION = 3;
+
+  var COLOR_THEMES = [
+    {id:'coral', bg:'#FFE3E3', text:'#B23A3A', border:'#FFC9C9'},
+    {id:'amber', bg:'#FFF1D6', text:'#9A6A10', border:'#FFE1A6'},
+    {id:'teal',  bg:'#DCF3F0', text:'#1F6E66', border:'#B8E6E0'},
+    {id:'lavender', bg:'#EBE7F2', text:'#5A4F72', border:'#D6CFE4'},
+    {id:'moss', bg:'#E3F0D9', text:'#4B7A2A', border:'#C9E3B8'},
+    {id:'sky', bg:'#DCEBFB', text:'#1F5C99', border:'#B9D9F5'},
+    {id:'rose', bg:'#FBE3ED', text:'#9A3A63', border:'#F3C2D6'},
+    {id:'slate', bg:'#E7E9EE', text:'#4A5568', border:'#CBD2DC'},
+    {id:'mint', bg:'#DFF3E8', text:'#1E6B4A', border:'#BCE4CE'},
+    {id:'clay', bg:'#F6E7DC', text:'#8A5227', border:'#EBD0BB'}
+  ];
+  function theme(id){
+    for(var i=0;i<COLOR_THEMES.length;i++){ if(COLOR_THEMES[i].id===id) return COLOR_THEMES[i]; }
+    return COLOR_THEMES[0];
+  }
+
+  function seedCategories(){
+    return [
+      {id:'cat_urgent', label:'Urgent', emoji:'🔥', sub:'Do first, today if you can', themeId:'coral', kind:'priority',
+        keywords:['urgent','asap','now','today','tonight','immediately','emergency','overdue','deadline','due','expires','expiring','tomorrow','critical','right away','end of day','eod']},
+      {id:'cat_important', label:'Important', emoji:'⭐', sub:'Plan soon, give it a date', themeId:'amber', kind:'priority',
+        keywords:['important','priority','must','need to','have to','matters','this week','by friday','before the','make sure']},
+      {id:'cat_quick', label:'Quick win', emoji:'⚡', sub:'Two minutes or less, just do it', themeId:'sky', kind:'priority',
+        keywords:['quick','two minutes','2 minutes','real quick']},
+      {id:'cat_habit', label:'Habit', emoji:'🔁', sub:'Repeats, so track the streak', themeId:'moss', kind:'habit',
+        keywords:['every day','everyday','daily','each day','every morning','each morning','every night','every evening','habit','routine','weekly','every week','each week','weekdays','practice','stretch','journal','meditate','every monday','every friday']},
+      {id:'cat_grocery', label:'Grocery', emoji:'🛒', sub:'Food run, check off at the store', themeId:'mint', kind:'list',
+        keywords:['grocery','groceries','milk','eggs','bread','butter','cheese','yogurt','coffee','tea','sugar','flour','rice','pasta','cereal','oatmeal','chicken','beef','fish','produce','lettuce','spinach','tomatoes','onions','potatoes','bananas','apples','berries','snacks','juice','olive oil','peanut butter','tortillas','beans','frozen'],
+       },
+      {id:'cat_shopping', label:'Shopping', emoji:'🛍️', sub:'Things to buy, not food', themeId:'clay', kind:'list',
+        keywords:['shopping','amazon','target','costco','gift','birthday present','present for','batteries','charger','cable','socks','shoes','shampoo','toothpaste','detergent','paper towels','toilet paper','light bulbs','printer ink','notebook','stamps'],
+       },
+      {id:'cat_wait', label:'Can wait', emoji:'⏳', sub:'Later, no rush and no guilt', themeId:'teal', kind:'priority',
+        keywords:['later','next week','next month','next year','no rush','low priority','when i have time','whenever','not urgent']},
+      {id:'cat_parking', label:'Parking lot', emoji:'🅿️', sub:"Maybe someday, just don't lose it", themeId:'lavender', kind:'priority',
+        keywords:['someday','eventually','random idea','idea','brainstorm','what if','one day','daydream']}
+    ];
+  }
+
+  function freshState(){
+    return {
+      v: SCHEMA_VERSION,
+      profile: {name:'', avatar:'🧑'},
+      categories: seedCategories(),
+      thoughts: [],
+      habits: [],
+      learned: {},
+      meta: {totalDumped:0, includeLists:false, createdAt: now(), updatedAt: now()}
+    };
+  }
+
+  var S = freshState();
+
+  function now(){ return new Date().toISOString(); }
+  function uid(p){ return p + '_' + Date.now().toString(36) + '_' + Math.random().toString(36).slice(2,7); }
+
+  /* ---- date helpers (local time, not UTC) ---- */
+  function dayKey(d){
+    var y=d.getFullYear(), m=('0'+(d.getMonth()+1)).slice(-2), dd=('0'+d.getDate()).slice(-2);
+    return y+'-'+m+'-'+dd;
+  }
+  function addDays(d,n){ var x=new Date(d.getTime()); x.setDate(x.getDate()+n); return x; }
+  function todayKey(){ return dayKey(new Date()); }
+  var DOW = ['S','M','T','W','T','F','S'];
+
+  /* =========================================================
+     PERSISTENCE PLUMBING
+     ========================================================= */
+  var savePill = document.getElementById('savePill');
+  var saveText = document.getElementById('saveText');
+
+  function setSaveStatus(status){
+    var m = Store.getMode();
+    if(m==='memory'){
+      savePill.className='save-pill warn';
+      saveText.textContent='Session only';
+      savePill.title='Storage is unavailable here, so this clears when you close the tab. Use Export JSON to keep a copy.';
+      return;
+    }
+    savePill.className='save-pill';
+    if(status==='saving') saveText.textContent='Saving…';
+    else if(status==='error'){ savePill.className='save-pill warn'; saveText.textContent='Not saved'; }
+    else saveText.textContent='Saved';
+    savePill.title = (m==='widget') ? 'Saved to your Claude storage.' : 'Saved to this browser.';
+  }
+
+  function persist(){
+    S.meta.updatedAt = now();
+    Store.save(S, setSaveStatus);
+  }
+
+  /* ---- migration: anything older gets brought forward, never dropped ---- */
+  function migrate(raw){
+    if(!raw || typeof raw!=='object') return null;
+    var st = freshState();
+    if(raw.profile) st.profile = {name: raw.profile.name||'', avatar: raw.profile.avatar||'🧑'};
+    if(Array.isArray(raw.categories) && raw.categories.length){
+      st.categories = raw.categories.map(function(c){
+        return {
+          id: c.id || uid('cat'),
+          label: c.label || 'Untitled',
+          emoji: c.emoji || '🏷️',
+          sub: c.sub || '',
+          themeId: c.themeId || 'slate',
+          kind: (c.id==='cat_grocery'||c.id==='cat_shopping') ? 'list' : (c.id==='cat_habit' ? 'habit' : (['habit','list','priority'].indexOf(c.kind)>-1 ? c.kind : 'priority')) ,
+          keywords: Array.isArray(c.keywords) ? c.keywords : []
+        };
+      });
+    }
+    if(Array.isArray(raw.thoughts)){
+      st.thoughts = raw.thoughts.map(function(t){
+        return {
+          id: t.id || uid('th'),
+          text: String(t.text||''),
+          tag: t.tag || '',
+          category: t.category || null,
+          done: !!t.done,
+          why: t.why || '',
+          createdAt: t.createdAt || now(),
+          updatedAt: t.updatedAt || now(),
+          dueDate: t.dueDate || '', notes: t.notes || '', archived: !!t.archived, completedAt: t.completedAt || ''
+        };
+      });
+    }
+    if(Array.isArray(raw.habits)){
+      st.habits = raw.habits.map(function(h){
+        return {
+          id: h.id || uid('hb'),
+          text: String(h.text||''),
+          tag: h.tag || '',
+          cadence: ['daily','weekdays','weekly'].indexOf(h.cadence)>-1 ? h.cadence : 'daily',
+          log: (h.log && typeof h.log==='object') ? h.log : {},
+          createdAt: h.createdAt || now(),
+          startDate: h.startDate || dayKey(new Date(h.createdAt || now())), endDate: h.endDate || '',
+          archived: !!h.archived
+        };
+      });
+    }
+    if(raw.learned && typeof raw.learned==='object'){
+      Object.keys(raw.learned).forEach(function(term){
+        var row = raw.learned[term];
+        if(!row || typeof row!=='object') return;
+        var clean = {};
+        Object.keys(row).forEach(function(c){ var v=Number(row[c]); if(v>0) clean[c]=v; });
+        if(Object.keys(clean).length) st.learned[term]=clean;
+      });
+    }
+    if(raw.meta){
+      st.meta.totalDumped = raw.meta.totalDumped || 0;
+      st.meta.includeLists = !!raw.meta.includeLists;
+    }
+    st.meta.createdAt = (raw.meta && raw.meta.createdAt) || now();
+    // repair orphaned categories
+    st.thoughts.forEach(function(t){ if(t.category && !findCat(t.category, st.categories)) t.category = null; });
+    return st;
+  }
+
+  var UNSORTED = {id:null, label:'Unsorted', emoji:'❓', sub:"No clear signal, so you decide", themeId:'slate', kind:'priority', keywords:[]};
+  function catOf(id){ return findCat(id) || UNSORTED; }
+
+  function findCat(id, list){
+    var arr = list || S.categories;
+    for(var i=0;i<arr.length;i++){ if(arr[i].id===id) return arr[i]; }
+    return null;
+  }
+  function kindOf(c){ return c && c.kind ? c.kind : 'priority'; }
+  function priorityCats(){ return S.categories.filter(function(c){ return kindOf(c)==='priority'; }); }
+  function listCats(){ return S.categories.filter(function(c){ return kindOf(c)==='list'; }); }
+  function habitCat(){
+    for(var i=0;i<S.categories.length;i++){ if(S.categories[i].kind==='habit') return S.categories[i]; }
+    return null;
+  }
+
+  /* =========================================================
+     CLASSIFIER
+     Whole-word matching so "due" doesn't fire on "produce".
+     Longest keyword wins, so "next week" beats "week".
+     ========================================================= */
+  function escapeRe(s){ return s.replace(/[.*+?^${}()|[\]\\]/g,'\\$&'); }
+
+  /* Built-in rules. A leading verb tells you how much EFFORT something is,
+     not how urgent it is, so verbs route to Quick win rather than a priority. */
+  var RULES = [
+    {cat:'cat_quick', why:'starts with a quick action',
+     re:/^\s*(call|ring|text|email|e-mail|reply|respond|rsvp|order|buy|grab|pick up|drop off|book|schedule|confirm|cancel|send|print|sign|pay|renew|water|feed|refill|return|mail|forward|forward on|reschedule|message|dm|ping|talk to|check on)\b/i},
+    {cat:'cat_parking', why:'sounds exploratory rather than committed',
+     re:/^\s*(what if|idea:|maybe|might|could we|could i|should we|should i|i wonder|wonder if|explore|look into|research)\b/i},
+    {cat:'cat_wait', why:'depends on somebody else moving first',
+     re:/\b(waiting on|waiting for|blocked by|blocked on|pending|once .+ (replies|responds|gets back|confirms)|after .+ (replies|responds|gets back))\b/i}
+  ];
+
+  var STOPWORDS = ('a an and the to for of my our with on in at is are was be do does get got go going '+
+    'i me it its this that these those about from into over up down out off then than but or if so as by '+
+    'need needs want wants have has had will would should could can just now new one two some any all '+
+    'today tomorrow week month year time day').split(' ');
+
+  function tokens(text){
+    return text.toLowerCase().replace(/[^a-z0-9\s]/g,' ').split(/\s+/)
+      .filter(function(w){ return w.length>=3 && STOPWORDS.indexOf(w)===-1; });
+  }
+
+  /* Learned evidence, guarded three ways:
+     - a term that shows up across categories is treated as ambiguous and ignored
+     - a minimum score, so one correction never generalises
+     - a margin over the runner-up, so close calls stay unsorted */
+  function learnedGuess(text){
+    var scores = {}, drivers = {};
+    tokens(text).forEach(function(tk){
+      var row = S.learned[tk];
+      if(!row) return;
+      var cats = Object.keys(row);
+      var total = cats.reduce(function(a,c){ return a + row[c]; }, 0);
+      cats.forEach(function(c){
+        if(!findCat(c)) return;
+        if(row[c] < 2) return;               // seen once is a coincidence, not a pattern
+        var purity = row[c] / total;
+        if(purity < 0.6) return;             // ambiguous term, no vote
+        var pts = row[c] * purity;
+        scores[c] = (scores[c]||0) + pts;
+        if(!drivers[c] || pts > drivers[c].pts) drivers[c] = {term:tk, pts:pts};
+      });
+    });
+    var ranked = Object.keys(scores).sort(function(a,b){ return scores[b]-scores[a]; });
+    if(!ranked.length) return null;
+    var top = ranked[0], second = ranked[1];
+    if(scores[top] < 2) return null;                                  // not enough evidence yet
+    if(second && scores[top] < scores[second] * 1.5) return null;     // too close to call
+    return {catId: top, why: 'you usually file "' + drivers[top].term + '" here'};
+  }
+
+  /* Ranked by how much the signal comes from THIS user:
+     their own keywords, then their own corrections, then generic rules. */
+  function classify(text){
+    var t = text.toLowerCase();
+    var best = null, bestLen = 0, bestKw = '';
+    S.categories.forEach(function(c){
+      c.keywords.forEach(function(k){
+        if(!k || k.length<=bestLen) return;
+        var re = new RegExp('(^|[^a-z0-9])' + escapeRe(k) + '([^a-z0-9]|$)','i');
+        if(re.test(t)){ best = c.id; bestLen = k.length; bestKw = k; }
+      });
+    });
+    if(best) return {catId:best, why:'matched your keyword "'+bestKw+'"'};
+
+    var learned = learnedGuess(text);
+    if(learned) return learned;
+
+    for(var i=0;i<RULES.length;i++){
+      if(findCat(RULES[i].cat) && RULES[i].re.test(text)){
+        return {catId:RULES[i].cat, why:RULES[i].why};
+      }
+    }
+    return {catId:null, why:''};   // null means unsorted, and that is an honest answer
+  }
+
+  /* Only called on a deliberate correction, never on bulk moves or cycling. */
+  function learnFrom(text, newCat, oldCat){
+    tokens(text).forEach(function(tk){
+      var row = S.learned[tk] || (S.learned[tk] = {});
+      row[newCat] = (row[newCat]||0) + 1;
+      if(oldCat && oldCat!==newCat && row[oldCat]){
+        row[oldCat] -= 1;                     // the wrong guess loses ground
+        if(row[oldCat] <= 0) delete row[oldCat];
+      }
+      if(row[newCat] > 12) row[newCat] = 12;  // cap so old habits can still be overridden
+    });
+  }
+  function learnedTermCount(){ return Object.keys(S.learned).length; }
+
+  function inferCadence(text){
+    var t = text.toLowerCase();
+    if(/weekday|monday.*friday|work day/.test(t)) return 'weekdays';
+    if(/(once a week|every week|weekly|each week)/.test(t)) return 'weekly';
+    return 'daily';
+  }
+
+  /* =========================================================
+     HABIT MATH
+     ========================================================= */
+  function isScheduled(habit, d){
+    if(habit.cadence==='weekdays'){ var w=d.getDay(); return w>=1 && w<=5; }
+    return true; // daily and weekly both allow any day to be logged
+  }
+  function isLogged(habit, d){ return !!habit.log[dayKey(d)]; }
+
+  function currentStreak(habit){
+    if(habit.cadence==='weekly') return weeklyStreak(habit);
+    var d = new Date();
+    // today not logged yet is not a broken streak, start counting from yesterday
+    if(!isLogged(habit,d)) d = addDays(d,-1);
+    var n = 0, guard = 0;
+    while(guard++ < 400){
+      if(!isScheduled(habit,d)){ d = addDays(d,-1); continue; }
+      if(isLogged(habit,d)){ n++; d = addDays(d,-1); }
+      else break;
+    }
+    return n;
+  }
+  function weeklyStreak(habit){
+    // consecutive 7-day windows ending today that contain at least one log
+    var n=0, end=new Date(), guard=0;
+    while(guard++ < 200){
+      var hit=false;
+      for(var i=0;i<7;i++){ if(isLogged(habit, addDays(end,-i))){ hit=true; break; } }
+      if(hit){ n++; end = addDays(end,-7); } else break;
+    }
+    return n;
+  }
+  function bestStreak(habit){
+    var keys = Object.keys(habit.log).filter(function(k){ return habit.log[k]; }).sort();
+    if(!keys.length) return 0;
+    var best=1, run=1;
+    for(var i=1;i<keys.length;i++){
+      var prev = new Date(keys[i-1]+'T12:00:00');
+      var cur  = new Date(keys[i]+'T12:00:00');
+      var gap = Math.round((cur-prev)/86400000);
+      var allowed = 1;
+      if(habit.cadence==='weekdays'){
+        // walking Fri to Mon is a 3-day gap but still unbroken
+        var probe = addDays(prev,1), skips=0;
+        while(!isScheduled(habit,probe) && skips<7){ probe=addDays(probe,1); skips++; }
+        allowed = 1 + skips;
+      } else if(habit.cadence==='weekly'){ allowed = 7; }
+      if(gap<=allowed){ run++; if(run>best) best=run; } else { run=1; }
+    }
+    return best;
+  }
+  function last28Rate(habit){
+    var hit=0, sched=0, d=new Date();
+    for(var i=0;i<28;i++){
+      var day = addDays(d,-i);
+      if(habit.cadence!=='weekly' && !isScheduled(habit,day)) continue;
+      sched++;
+      if(isLogged(habit,day)) hit++;
+    }
+    if(habit.cadence==='weekly'){ sched = 4; hit = 0;
+      for(var w=0;w<4;w++){
+        for(var j=0;j<7;j++){ if(isLogged(habit, addDays(d,-(w*7+j)))){ hit++; break; } }
+      }
+    }
+    return sched ? Math.round(hit/sched*100) : 0;
+  }
+
+  /* =========================================================
+     UTIL
+     ========================================================= */
+  function prettyTag(tag){
+    if(!tag) return '';
+    return String(tag).split(' ').map(function(p){
+      return /^[a-z]/.test(p) ? p.charAt(0).toUpperCase() + p.slice(1) : p;
+    }).join(' ');
+  }
+  function visibleLifeArea(tag){
+    if(!tag) return '';
+    var raw=String(tag).trim();
+    if(/(^|\s)other$/i.test(raw.replace(/^\S+\s*/,'')) || raw.toLowerCase()==='✨ other') return '';
+    return prettyTag(raw);
+  }
+  function sentenceCase(str){
+    var t = String(str||'').trim().replace(/\s+/g,' ').replace(/\bi\b/g,'I');
+    return t ? t.charAt(0).toUpperCase() + t.slice(1) : t;
+  }
+
+  function esc(s){ var d=document.createElement('div'); d.textContent=(s==null?'':String(s)); return d.innerHTML; }
+
+  var toastStack = document.getElementById('toastStack');
+  function toast(msg){
+    var el = document.createElement('div');
+    el.className='toast'; el.textContent=msg;
+    toastStack.appendChild(el);
+    setTimeout(function(){ el.remove(); }, 2400);
+  }
+
+  /* =========================================================
+     TIPS + QUOTES  (manual advance only, no auto-rotate)
+     ========================================================= */
+  var tips = [
+    "Set a 2-minute timer before starting a task you're dreading. Momentum beats motivation.",
+    "Body doubling works: do a boring task while on a call or sitting near someone else.",
+    "Your brain isn't lazy, it's dopamine-seeking. Pair boring tasks with music or a snack.",
+    "Write it down the second you think it. Your brain is for having ideas, not storing them.",
+    "'Can wait' isn't 'won't happen.' Revisit your parking lot weekly, not never.",
+    "Pick ONE urgent item, not five. You can only do first-things one at a time.",
+    "If a task takes under 2 minutes, just do it now instead of sorting it.",
+    "Transitions are hard. Give yourself a 5-minute buffer between tasks, not zero.",
+    "Overwhelmed by the pile? Sort just 3 thoughts, then take a break. That still counts.",
+    "A habit you do 4 days a week is a habit. Missing one day breaks nothing.",
+    "External timers, alarms, and sticky notes are not cheating, they're outsourced memory.",
+    "Some days the win is just the brain dump. Sorting can wait until tomorrow.",
+    "Never miss twice. One skipped day is a blip, two is the start of a new pattern.",
+    "Reward yourself after sorting, not just after finishing. Starting is the hardest part."
+  ];
+  var quotes = [
+    {text:"Come unto me, all ye that labour and are heavy laden, and I will give you rest.", ref:"Matthew 11:28"},
+    {text:"Be still, and know that I am God.", ref:"Psalm 46:10"},
+    {text:"Commit thy works unto the LORD, and thy thoughts shall be established.", ref:"Proverbs 16:3"},
+    {text:"Trust in the LORD with all thine heart; and lean not unto thine own understanding.", ref:"Proverbs 3:5"},
+    {text:"God hath not given us the spirit of fear; but of power, and of love, and of a sound mind.", ref:"2 Timothy 1:7"},
+    {text:"Be careful for nothing; but in every thing by prayer let your requests be made known unto God.", ref:"Philippians 4:6"},
+    {text:"To every thing there is a season, and a time to every purpose.", ref:"Ecclesiastes 3:1"},
+    {text:"Fear thou not, for I am with thee: be not dismayed, for I am thy God.", ref:"Isaiah 41:10"},
+    {text:"Commit thy way unto the LORD; trust also in him; and he shall bring it to pass.", ref:"Psalm 37:5"},
+    {text:"Done is better than perfect.", ref:""},
+    {text:"You don't have to see the whole staircase, just take the first step.", ref:""},
+    {text:"Progress, not perfection.", ref:""},
+    {text:"Your brain isn't broken. It's just wired for a different kind of focus.", ref:""},
+    {text:"Rest is productive too.", ref:""},
+    {text:"Small steps still move you forward.", ref:""}
+  ];
+  var tipIdx = Math.floor(Math.random()*tips.length);
+  var quoteIdx = Math.floor(Math.random()*quotes.length);
+  function showTip(){ document.getElementById('tipText').textContent = tips[tipIdx]; }
+  function showQuote(){
+    var q = quotes[quoteIdx];
+    document.getElementById('quoteText').textContent = '"' + q.text + '"';
+    document.getElementById('quoteRef').textContent = q.ref;
+  }
+  document.getElementById('tipNext').addEventListener('click', function(){ tipIdx=(tipIdx+1)%tips.length; showTip(); });
+  document.getElementById('quoteNext').addEventListener('click', function(){ quoteIdx=(quoteIdx+1)%quotes.length; showQuote(); });
+
+  /* =========================================================
+     TABS
+     ========================================================= */
+  var TABS = {
+    dump:  {btn:'tabDump',   panel:'panelDump'},
+    sort:  {btn:'tabSort',   panel:'panelSort'},
+    list:  {btn:'tabList',   panel:'panelList'},
+    lists: {btn:'tabLists',  panel:'panelLists'},
+    habits:{btn:'tabHabits', panel:'panelHabits'}
+  };
+  var activeTab = 'dump';
+
+  function switchTab(which){
+    if((which==='sort'||which==='list') && S.thoughts.length===0) return;
+    activeTab = which;
+    Object.keys(TABS).forEach(function(k){
+      document.getElementById(TABS[k].btn).classList.toggle('active', k===which);
+      document.getElementById(TABS[k].panel).classList.toggle('active', k===which);
+    });
+    if(which==='sort') renderSort();
+    if(which==='list') renderList();
+    if(which==='lists') renderLists();
+    if(which==='habits') renderHabits();
+  }
+  Object.keys(TABS).forEach(function(k){
+    document.getElementById(TABS[k].btn).addEventListener('click', function(){ switchTab(k); });
+  });
+
+  function updateNav(){
+    var lb = document.getElementById('listsBadge');
+    if(lb){ var lc = listItemsAll().filter(function(t){return !t.done;}).length; lb.textContent = lc ? String(lc) : ''; }
+    var badge = document.getElementById('sortBadge');
+    if(badge){ var u = S.thoughts.filter(function(t){return !t.category;}).length; badge.textContent = u ? String(u) : ''; }
+    var has = S.thoughts.length>0;
+    document.getElementById('goSortBtn').disabled = !has;
+    document.getElementById('tabSort').disabled = !has;
+    document.getElementById('tabList').disabled = !has;
+  }
+
+  /* =========================================================
+     STEP 1: DUMP
+     ========================================================= */
+  var cloudField = document.getElementById('cloudField');
+  var dumpInput = document.getElementById('dumpInput');
+  var tagSelect = document.getElementById('tagSelect');
+  var justAdded = null;
+
+  function addThought(){
+    var val = sentenceCase(dumpInput.value.trim());
+    if(!val) return;
+    var guess = classify(val);
+    var catId = guess.catId;
+    var cat = findCat(catId);
+    S.meta.totalDumped++;
+
+    if(cat && cat.kind==='habit'){
+      var h = {
+        id: uid('hb'), text: val, tag: tagSelect.value,
+        cadence: inferCadence(val), log:{}, createdAt: now(), startDate:todayKey(), endDate:'', archived:false
+      };
+      S.habits.push(h);
+      justAdded = h.id;
+      toast('🔁 Added to Habits');
+    } else {
+      var t = {
+        id: uid('th'), text: val, tag: tagSelect.value, category: catId,
+        done:false, why: guess.why, createdAt: now(), updatedAt: now(), dueDate:'', notes:'', archived:false, completedAt:''
+      };
+      S.thoughts.push(t);
+      justAdded = t.id;
+    }
+    dumpInput.value='';
+    dumpInput.focus();
+    renderCloud();
+    updateNav();
+    persist();
+  }
+  document.getElementById('addBtn').addEventListener('click', addThought);
+  dumpInput.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); addThought(); } });
+
+  function cloudItems(){
+    var items = S.thoughts.map(function(t){ return {kind:'thought', id:t.id, text:t.text, tag:t.tag, catId:t.category, why:t.why, at:t.createdAt}; })
+      .concat(S.habits.filter(function(h){return !h.archived;}).map(function(h){
+        var hc = habitCat();
+        return {kind:'habit', id:h.id, text:h.text, tag:h.tag, catId: hc?hc.id:'', at:h.createdAt};
+      }));
+    items.sort(function(a,b){ return a.at < b.at ? -1 : 1; });
+    return items;
+  }
+
+  function renderCloud(){
+    cloudField.innerHTML='';
+    cloudItems().forEach(function(it){
+      var cat = catOf(it.catId);
+      var th = theme(cat.themeId);
+      var b = document.createElement('div');
+      b.className='bubble' + (it.id===justAdded ? ' is-new' : '');
+      b.style.background = th.bg;
+      b.style.color = th.text;
+      b.dataset.id = it.id;
+
+      var dotTitle = it.kind==='habit'
+        ? 'Tracked as a habit. Tap to turn it back into a task.'
+        : (it.catId
+            ? 'Sorted as ' + cat.label + (it.why ? ' because ' + it.why : '') + '. Tap to move it.'
+            : 'Not sorted yet. Tap to pick a bucket.');
+
+      b.innerHTML =
+        '<button class="cat-dot" title="'+esc(dotTitle)+'" aria-label="'+esc(dotTitle)+'">'+esc(cat.emoji)+'</button>'+
+        '<span class="txt">'+(visibleLifeArea(it.tag)?esc(visibleLifeArea(it.tag))+' · ':'')+esc(it.text)+'</span>'+
+        '<button class="del" aria-label="Remove: '+esc(it.text)+'">✕</button>';
+
+      b.querySelector('.cat-dot').addEventListener('click', function(){
+        if(it.kind==='habit'){ habitToThought(it.id); }
+        else { cycleCategory(it.id); }
+      });
+      b.querySelector('.del').addEventListener('click', function(){
+        if(it.kind==='habit') S.habits = S.habits.filter(function(h){return h.id!==it.id;});
+        else S.thoughts = S.thoughts.filter(function(x){return x.id!==it.id;});
+        renderCloud(); updateNav(); persist();
+      });
+      cloudField.appendChild(b);
+    });
+    justAdded = null;
+  }
+
+  function cycleCategory(id){
+    var t = S.thoughts.find(function(x){return x.id===id;});
+    if(!t) return;
+    var ids = [null].concat(S.categories.map(function(c){return c.id;}));
+    var next = ids[(ids.indexOf(t.category)+1) % ids.length];
+    setCategory(id, next);
+    renderCloud();
+  }
+
+  /* ---- conversions between task and habit ---- */
+  function thoughtToHabit(id){
+    var t = S.thoughts.find(function(x){return x.id===id;});
+    if(!t) return;
+    S.thoughts = S.thoughts.filter(function(x){return x.id!==id;});
+    S.habits.push({id:uid('hb'), text:t.text, tag:t.tag, cadence:inferCadence(t.text), log:{}, createdAt:t.createdAt, startDate:dayKey(new Date(t.createdAt)), endDate:'', archived:false});
+    toast('🔁 Now tracked as a habit');
+    persist();
+  }
+  function habitToThought(id){
+    var h = S.habits.find(function(x){return x.id===id;});
+    if(!h) return;
+    S.habits = S.habits.filter(function(x){return x.id!==id;});
+    S.thoughts.push({id:uid('th'), text:h.text, tag:h.tag, category:null, done:false, createdAt:h.createdAt, updatedAt:now()});
+    toast('Moved back to tasks. Streak history cleared.');
+    renderCloud(); renderSort(); updateNav(); persist();
+  }
+
+  function setCategory(id, catId, learn){
+    var t = S.thoughts.find(function(x){return x.id===id;});
+    if(catId === null || catId === ''){
+      if(t){ t.category = null; t.why = ''; t.updatedAt = now(); persist(); }
+      return;
+    }
+    var cat = findCat(catId);
+    if(!cat) return;
+    if(learn && t) learnFrom(t.text, catId, t.category);
+    if(cat.kind==='habit'){ thoughtToHabit(id); renderSort(); renderCloud(); return; }
+    if(t){
+      t.category = catId;
+      t.why = learn ? 'you put it here' : t.why;
+      t.updatedAt = now();
+      persist();
+    }
+  }
+
+  document.getElementById('goSortBtn').addEventListener('click', function(){ switchTab('sort'); });
+  document.getElementById('goListBtn').addEventListener('click', function(){ switchTab('list'); });
+  document.getElementById('backToDump').addEventListener('click', function(){ switchTab('dump'); });
+
+  document.getElementById('resetAll').addEventListener('click', function(){
+    if(!confirm('Clear every thought, habit, and streak? This cannot be undone. Export your data first if you want a copy.')) return;
+    var keepProfile = S.profile;
+    S = freshState();
+    S.profile = keepProfile;
+    renderAll();
+    persist();
+    switchTab('dump');
+    toast('Cleared. Fresh start.');
+  });
+
+  var KIND_COPY = {
+    priority: {title:'Priority buckets', note:'These answer when. An item lands in one, gets done, and leaves.'},
+    list:     {title:'Lists', note:'These have no priority. Items sit here until you check them off at the store, then you clear the lot.'},
+    habit:    {title:'Habits', note:'These never get finished. Anything sorted here starts a streak instead of becoming a task.'}
+  };
+
+  function renderLegend(target){
+    var el = document.getElementById(target);
+    if(!el) return;
+    var html = '';
+    ['priority','list','habit'].forEach(function(k){
+      var cats = S.categories.filter(function(c){ return kindOf(c)===k; });
+      if(!cats.length) return;
+      html += '<div class="legend-kind">'+esc(KIND_COPY[k].title)+'</div>';
+      cats.forEach(function(c){
+        var th = theme(c.themeId);
+        html += '<div class="legend-row" style="background:'+th.bg+'; color:'+th.text+'">'+
+                  '<span class="legend-emoji">'+esc(c.emoji)+'</span>'+
+                  '<span><span class="legend-name">'+esc(c.label)+'</span>'+
+                  (c.sub ? '<div class="legend-desc">'+esc(c.sub)+'</div>' : '')+'</span>'+
+                '</div>';
+      });
+      html += '<p class="legend-note">'+esc(KIND_COPY[k].note)+'</p>';
+    });
+    html += '<div class="legend-kind">Also</div>'+
+            '<div class="legend-row" style="background:'+theme('slate').bg+'; color:'+theme('slate').text+'">'+
+              '<span class="legend-emoji">❓</span>'+
+              '<span><span class="legend-name">Unsorted</span><div class="legend-desc">No clear signal, so nothing was guessed. Waiting on you.</div></span>'+
+            '</div>';
+    el.innerHTML = html;
+  }
+
+  document.getElementById('legendToggle').addEventListener('click', function(){
+    var body = document.getElementById('legendBody');
+    var open = body.style.display !== 'none';
+    body.style.display = open ? 'none' : 'block';
+    this.setAttribute('aria-expanded', String(!open));
+    this.querySelector('.caret').style.transform = open ? 'rotate(-90deg)' : 'none';
+    if(!open) renderLegend('legendBody');
+  });
+
+  /* =========================================================
+     STEP 2: SORT
+     ========================================================= */
+  function unsortedThoughts(){ return S.thoughts.filter(function(t){ return !t.category; }); }
+
+  function renderUnsorted(){
+    var card = document.getElementById('unsortedCard');
+    var pool = document.getElementById('pool');
+    var items = unsortedThoughts();
+    document.getElementById('sortBadge').textContent = items.length ? String(items.length) : '';
+    card.style.display = items.length ? 'block' : 'none';
+    document.getElementById('unsortedCount').textContent = items.length;
+    pool.innerHTML = '';
+    if(!items.length) return;
+
+    var sel = document.getElementById('bulkTarget');
+    sel.innerHTML = S.categories.map(function(c){
+      return '<option value="'+esc(c.id)+'">'+esc(c.emoji)+' '+esc(c.label)+'</option>';
+    }).join('');
+
+    items.forEach(function(t){
+      var card2 = document.createElement('div');
+      card2.className='sort-bubble';
+      var catsHtml = S.categories.map(function(c){
+        var th = theme(c.themeId);
+        return '<button class="cat-btn" style="background:'+th.bg+';color:'+th.text+'" title="'+esc(c.label)+'" aria-label="Move to '+esc(c.label)+'" data-cat="'+esc(c.id)+'">'+esc(c.emoji)+'</button>';
+      }).join('');
+      card2.innerHTML = '<span class="txt">'+(visibleLifeArea(t.tag)?esc(visibleLifeArea(t.tag))+' · ':'')+esc(t.text)+'</span><div class="cats">'+catsHtml+'</div>';
+      Array.prototype.forEach.call(card2.querySelectorAll('.cat-btn'), function(btn){
+        btn.addEventListener('click', function(){ setCategory(t.id, btn.dataset.cat, true); renderSort(); renderCloud(); });
+      });
+      pool.appendChild(card2);
+    });
+  }
+
+  function renderSort(){
+    renderUnsorted();
+    var grid = document.getElementById('zonesGrid');
+    grid.innerHTML='';
+    S.categories.forEach(function(cat){
+      var th = theme(cat.themeId);
+      var zoneEl = document.createElement('div');
+      zoneEl.className='zone';
+      zoneEl.dataset.cat = cat.id;
+      zoneEl.style.background = th.bg;
+      zoneEl.style.borderColor = th.border;
+
+      var count, body;
+      if(cat.kind==='habit'){
+        var hs = S.habits.filter(function(h){return !h.archived;});
+        count = hs.length;
+        body = hs.length ? hs.map(function(h){
+          return '<div class="habit-chip" data-hid="'+h.id+'">'+
+                   '<span style="flex:1; word-break:break-word;">'+esc(h.tag)+' '+esc(h.text)+'</span>'+
+                   '<span class="streak-badge">🔥 '+currentStreak(h)+'</span>'+
+                   '<button class="mini to-task" title="Turn back into a task">↩</button>'+
+                 '</div>';
+        }).join('') : '<div class="zone-empty">Drop a repeating routine here and it becomes a tracked habit.</div>';
+      } else {
+        var items = S.thoughts.filter(function(t){ return t.category===cat.id; });
+        count = items.length;
+        var opts = S.categories.map(function(c2){
+          return '<option value="'+esc(c2.id)+'"'+(c2.id===cat.id?' selected':'')+'>'+esc(c2.emoji)+' '+esc(c2.label)+'</option>';
+        }).join('');
+        body = items.length ? items.map(function(t){
+          return '<div class="zone-item'+(t.done?' done':'')+'" draggable="true" data-id="'+t.id+'">'+
+            '<input type="checkbox" '+(t.done?'checked':'')+' aria-label="Mark done: '+esc(t.text)+'">'+
+            '<span class="zone-item-text" title="'+esc(t.why ? 'Sorted here because '+t.why : 'You put this here')+'">'+(visibleLifeArea(t.tag)?esc(visibleLifeArea(t.tag))+' · ':'')+esc(t.text)+
+              (t.why ? '<span class="why-note">'+esc(t.why)+'</span>' : '')+'</span>'+
+            '<select class="cat-move" aria-label="Move to a different zone">'+opts+'</select>'+
+            '<button class="mini del" aria-label="Remove: '+esc(t.text)+'">✕</button>'+
+          '</div>';
+        }).join('') : '<div class="zone-empty">Nothing here yet.</div>';
+      }
+
+      zoneEl.innerHTML =
+        '<div class="zone-head"><span class="zone-title" style="color:'+th.text+'">'+esc(cat.emoji)+' '+esc(cat.label)+'</span><span class="zone-badge">'+count+'</span></div>'+
+        (cat.sub ? '<div class="zone-sub" style="color:'+th.text+'">'+esc(cat.sub)+'</div>' : '')+
+        '<div class="zone-list">'+body+'</div>';
+      grid.appendChild(zoneEl);
+
+      Array.prototype.forEach.call(zoneEl.querySelectorAll('.zone-item'), function(row){
+        var id = row.dataset.id;
+        var t = S.thoughts.find(function(x){return x.id===id;});
+        row.addEventListener('dragstart', function(e){ e.dataTransfer.setData('text/plain', id); });
+        row.querySelector('input').addEventListener('change', function(e){
+          t.done = e.target.checked; t.updatedAt = now(); persist(); renderSort();
+        });
+        row.querySelector('.cat-move').addEventListener('change', function(e){ setCategory(id, e.target.value, true); renderSort(); renderCloud(); });
+        row.querySelector('.del').addEventListener('click', function(){
+          S.thoughts = S.thoughts.filter(function(x){return x.id!==id;});
+          persist(); renderSort(); renderCloud(); updateNav();
+        });
+      });
+      Array.prototype.forEach.call(zoneEl.querySelectorAll('.to-task'), function(btn){
+        btn.addEventListener('click', function(){
+          habitToThought(btn.closest('.habit-chip').dataset.hid);
+        });
+      });
+
+      zoneEl.addEventListener('dragover', function(e){ e.preventDefault(); zoneEl.classList.add('drag-over'); });
+      zoneEl.addEventListener('dragleave', function(){ zoneEl.classList.remove('drag-over'); });
+      zoneEl.addEventListener('drop', function(e){
+        e.preventDefault();
+        zoneEl.classList.remove('drag-over');
+        var id = e.dataTransfer.getData('text/plain');
+        setCategory(id, cat.id, true);
+        renderSort(); renderCloud();
+      });
+    });
+  }
+
+  document.getElementById('bulkBtn').addEventListener('click', function(){
+    var target = document.getElementById('bulkTarget').value;
+    var items = unsortedThoughts();
+    if(!items.length || !target) return;
+    var cat = findCat(target);
+    if(!confirm('Send all ' + items.length + ' unsorted items to ' + cat.label + '?')) return;
+    items.slice().forEach(function(t){ setCategory(t.id, target); });
+    renderSort(); renderCloud();
+    toast('Moved ' + items.length + ' to ' + cat.label);
+  });
+
+  /* =========================================================
+     STEP 3: THE LIST  (interactive <-> static)
+     ========================================================= */
+  var listMode = 'interactive';
+  var collapsed = {};
+  var editingId = null;
+  var selectedDailyDate = todayKey();
+  document.getElementById('dailyDate').value = selectedDailyDate;
+
+  document.getElementById('modeInteractive').addEventListener('click', function(){ listMode='interactive'; renderList(); });
+  document.getElementById('modeStatic').addEventListener('click', function(){ listMode='static'; renderList(); });
+  document.getElementById('hideDone').addEventListener('change', renderList);
+  document.getElementById('showArchived').addEventListener('change', renderList);
+  document.getElementById('dailyDate').addEventListener('change', function(e){ selectedDailyDate=e.target.value||todayKey(); renderList(); });
+
+  function renderList(){
+    document.getElementById('modeInteractive').classList.toggle('active', listMode==='interactive');
+    document.getElementById('modeStatic').classList.toggle('active', listMode==='static');
+    document.getElementById('interactiveView').style.display = listMode==='interactive' ? 'block' : 'none';
+    document.getElementById('staticView').style.display = listMode==='static' ? 'block' : 'none';
+    if(listMode==='interactive') renderInteractive(); else renderStatic();
+  }
+
+  function habitsDueToday(){
+    var d = new Date(selectedDailyDate+'T12:00:00');
+    return S.habits.filter(function(h){
+      if(h.archived) return false;
+      if(h.startDate && selectedDailyDate < h.startDate) return false;
+      if(h.endDate && selectedDailyDate > h.endDate) return false;
+      return h.cadence!=='weekdays' || isScheduled(h,d);
+    });
+  }
+
+  function renderInteractive(){
+    var hideDone = document.getElementById('hideDone').checked;
+    var showArchived = document.getElementById('showArchived').checked;
+    var isToday = selectedDailyDate===todayKey();
+    document.getElementById('dailyViewTitle').textContent = isToday ? "Today's List" : 'Daily View';
+    var wrap = document.getElementById('listGroups');
+    wrap.innerHTML='';
+
+    var listIds = listCats().map(function(c){ return c.id; });
+    var taskItems = S.thoughts.filter(function(t){
+      if(listIds.indexOf(t.category)!==-1) return false;
+      if(!showArchived && t.archived) return false;
+      if(selectedDailyDate!==todayKey()) return t.dueDate===selectedDailyDate || (t.completedAt && dayKey(new Date(t.completedAt))===selectedDailyDate);
+      return !t.dueDate || t.dueDate===selectedDailyDate || (t.completedAt && dayKey(new Date(t.completedAt))===selectedDailyDate);
+    });
+    var totalT = taskItems.length;
+    var doneT = taskItems.filter(function(t){return t.done;}).length;
+    var tk = selectedDailyDate;
+    var due = habitsDueToday();
+    var doneH = due.filter(function(h){ return h.log[tk]; }).length;
+    var total = totalT + due.length, done = doneT + doneH;
+    var pct = total ? Math.round(done/total*100) : 0;
+    document.getElementById('progLabel').textContent = done + ' of ' + total + ' done';
+    document.getElementById('progPct').textContent = pct + '%';
+    document.getElementById('progFill').style.width = pct + '%';
+
+    var openLists = listCats().map(function(c){
+      return {cat:c, open: itemsOfList(c.id).filter(function(t){ return !t.done; }).length};
+    }).filter(function(x){ return x.open > 0; });
+
+    if(total===0 && !openLists.length){
+      wrap.innerHTML = '<div class="zone-empty" style="text-align:center; padding:24px;">Nothing on the list yet. Head back to step 1 and dump something.</div>';
+      return;
+    }
+
+    if(openLists.length){
+      var bar = document.createElement('div');
+      bar.className='list-pointer';
+      bar.innerHTML = '<span class="lp-label">Waiting on your lists</span>';
+      var chips = document.createElement('div');
+      chips.style.display='flex'; chips.style.gap='7px'; chips.style.flexWrap='wrap';
+      openLists.forEach(function(x){
+        var th = theme(x.cat.themeId);
+        var chip = document.createElement('button');
+        chip.className='lp-chip';
+        chip.style.background = th.bg; chip.style.color = th.text; chip.style.borderColor = th.border;
+        chip.innerHTML = esc(x.cat.emoji)+' '+esc(x.cat.label)+' <strong>'+x.open+'</strong>';
+        chip.addEventListener('click', function(){ activeListId = x.cat.id; switchTab('lists'); });
+        chips.appendChild(chip);
+      });
+      bar.appendChild(chips);
+      wrap.appendChild(bar);
+    }
+
+    // habits first: they're time-bound to today
+    if(due.length){
+      var hc = habitCat() || {emoji:'🔁', label:'Habits', themeId:'moss'};
+      var hth = theme(hc.themeId);
+      var hGroup = buildGroup('__habits', hc.emoji + ' ' + hc.label + ' today', hth, due.length, doneH);
+      var hBody = hGroup.querySelector('.group-body');
+      due.forEach(function(h){
+        var isDone = !!h.log[tk];
+        if(hideDone && isDone) return;
+        var row = document.createElement('div');
+        row.className = 'list-row' + (isDone?' done':'');
+        row.innerHTML =
+          '<input type="checkbox" '+(isDone?'checked':'')+' aria-label="Log today: '+esc(h.text)+'">'+
+          '<span class="list-text">'+esc(h.text)+'</span>'+
+          '<span class="streak-badge">🔥 '+currentStreak(h)+'</span>';
+        row.querySelector('input').addEventListener('change', function(){
+          toggleHabitDay(h.id, tk);
+          renderInteractive();
+        });
+        hBody.appendChild(row);
+      });
+      if(!hBody.children.length) hBody.innerHTML = '<div class="zone-empty">All logged for today. 🎉</div>';
+      wrap.appendChild(hGroup);
+    }
+
+    [UNSORTED].concat(priorityCats()).forEach(function(cat){
+      var items = taskItems.filter(function(t){ return cat.id===null ? !t.category : t.category===cat.id; });
+      if(!items.length) return;
+      var th = theme(cat.themeId);
+      var dn = items.filter(function(t){return t.done;}).length;
+      var g = buildGroup(cat.id, cat.emoji + ' ' + cat.label, th, items.length, dn);
+      var body = g.querySelector('.group-body');
+
+      items.forEach(function(t, i){
+        if(hideDone && t.done) return;
+        var row = document.createElement('div');
+        row.className = 'list-row' + (t.done?' done':'');
+
+        if(editingId === t.id){
+          row.innerHTML = '<input type="checkbox" '+(t.done?'checked':'')+' disabled>' +
+            '<div class="task-detail-wrap"><input class="list-text-input task-detail-input" type="text" maxlength="140" spellcheck="true" value="'+esc(t.text)+'">' +
+            '<input class="task-due task-detail-input" type="date" value="'+esc(t.dueDate||'')+'" aria-label="Due date">' +
+            '<textarea class="task-notes task-detail-notes" maxlength="1000" spellcheck="true" placeholder="Notes (optional)">'+esc(t.notes||'')+'</textarea></div>' +
+            '<div class="row-tools"><button class="save-edit" aria-label="Save">✔</button><button class="cancel-edit" aria-label="Cancel">✕</button></div>';
+          var input = row.querySelector('.list-text-input');
+          var commit = function(){
+            var v = input.value.trim();
+            if(v){ t.text = sentenceCase(v); t.dueDate=row.querySelector('.task-due').value; t.notes=row.querySelector('.task-notes').value.trim(); t.updatedAt = now(); persist(); }
+            editingId = null; renderInteractive();
+          };
+          row.querySelector('.save-edit').addEventListener('click', commit);
+          row.querySelector('.cancel-edit').addEventListener('click', function(){ editingId=null; renderInteractive(); });
+          input.addEventListener('keydown', function(e){
+            if(e.key==='Enter'){ e.preventDefault(); commit(); }
+            if(e.key==='Escape'){ editingId=null; renderInteractive(); }
+          });
+          body.appendChild(row);
+          setTimeout(function(){ input.focus(); input.select(); }, 0);
+          return;
+        }
+
+        row.innerHTML =
+          '<input type="checkbox" '+(t.done?'checked':'')+' aria-label="Mark done: '+esc(t.text)+'">'+
+          '<span class="list-text" tabindex="0" role="button" title="Tap to edit details">'+(visibleLifeArea(t.tag)?esc(visibleLifeArea(t.tag))+' · ':'')+esc(t.text)+(t.dueDate?' <span class="task-meta">📅 '+esc(t.dueDate)+'</span>':'')+(t.notes?' <span class="task-meta">📝</span>':'')+'</span>'+
+          '<div class="row-tools">'+
+            '<button class="up" aria-label="Move up" '+(i===0?'disabled':'')+'>▲</button>'+
+            '<button class="down" aria-label="Move down" '+(i===items.length-1?'disabled':'')+'>▼</button>'+
+            '<button class="to-habit" aria-label="Make this a habit" title="Make this a habit">🔁</button>'+
+            '<button class="archive-task" aria-label="Archive" title="Archive">📦</button>'+
+            '<button class="rm" aria-label="Delete permanently" title="Delete permanently">🗑</button>'+
+          '</div>';
+
+        row.querySelector('input').addEventListener('change', function(e){
+          t.done = e.target.checked; t.completedAt = t.done ? now() : ''; t.updatedAt = now(); persist(); renderInteractive();
+        });
+        var startEdit = function(){ editingId = t.id; renderInteractive(); };
+        row.querySelector('.list-text').addEventListener('click', startEdit);
+        row.querySelector('.list-text').addEventListener('keydown', function(e){ if(e.key==='Enter'){ startEdit(); } });
+        row.querySelector('.up').addEventListener('click', function(){ moveInGroup(t.id, items, -1); });
+        row.querySelector('.down').addEventListener('click', function(){ moveInGroup(t.id, items, 1); });
+        row.querySelector('.to-habit').addEventListener('click', function(){ thoughtToHabit(t.id); renderInteractive(); renderCloud(); });
+        row.querySelector('.archive-task').addEventListener('click', function(){ t.archived=!t.archived; t.updatedAt=now(); persist(); renderInteractive(); renderCloud(); toast(t.archived?'Archived':'Restored'); });
+        row.querySelector('.rm').addEventListener('click', function(){
+          if(!confirm('Permanently delete this item? This cannot be undone.')) return;
+          S.thoughts = S.thoughts.filter(function(x){return x.id!==t.id;});
+          persist(); renderInteractive(); renderCloud(); updateNav();
+        });
+        body.appendChild(row);
+      });
+
+      if(!body.children.length) body.innerHTML = '<div class="zone-empty">All done here. 🎉</div>';
+      wrap.appendChild(g);
+    });
+  }
+
+  function buildGroup(key, title, th, count, doneCount){
+    var g = document.createElement('div');
+    g.className = 'group' + (collapsed[key] ? ' collapsed' : '');
+    g.style.borderColor = th.border;
+    var head = document.createElement('button');
+    head.className='group-head';
+    head.style.background = th.bg;
+    head.style.color = th.text;
+    head.setAttribute('aria-expanded', collapsed[key] ? 'false' : 'true');
+    head.innerHTML = '<span>'+esc(title)+'</span><span class="zone-badge">'+doneCount+'/'+count+'</span><span class="caret">▼</span>';
+    head.addEventListener('click', function(){
+      collapsed[key] = !collapsed[key];
+      g.classList.toggle('collapsed');
+      head.setAttribute('aria-expanded', collapsed[key] ? 'false' : 'true');
+    });
+    var body = document.createElement('div');
+    body.className='group-body';
+    g.appendChild(head); g.appendChild(body);
+    return g;
+  }
+
+  function moveInGroup(id, items, dir){
+    var pos = items.findIndex(function(x){return x.id===id;});
+    var swapWith = items[pos+dir];
+    if(!swapWith) return;
+    var a = S.thoughts.findIndex(function(x){return x.id===id;});
+    var b = S.thoughts.findIndex(function(x){return x.id===swapWith.id;});
+    var tmp = S.thoughts[a]; S.thoughts[a]=S.thoughts[b]; S.thoughts[b]=tmp;
+    persist(); renderInteractive();
+  }
+
+  function toggleHabitDay(hid, key){
+    var h = S.habits.find(function(x){return x.id===hid;});
+    if(!h) return;
+    if(h.log[key]) delete h.log[key]; else h.log[key]=true;
+    persist();
+  }
+
+  /* ---- STATIC VIEW ---- */
+  function listAsGroups(withLists){
+    var out = [];
+    var due = habitsDueToday(), tk = todayKey();
+    if(due.length){
+      out.push({
+        title: (habitCat() ? habitCat().emoji+' '+habitCat().label : '🔁 Habits') + ' today',
+        items: due.map(function(h){ return {text:h.text, done: !!h.log[tk], meta:'🔥 '+currentStreak(h)}; })
+      });
+    }
+    var cats = [UNSORTED].concat(priorityCats());
+    if(withLists) cats = cats.concat(listCats());   // lists last, so tasks lead the page
+    cats.forEach(function(cat){
+      var items = cat.id===null ? unsortedThoughts() : S.thoughts.filter(function(t){ return t.category===cat.id; });
+      if(!items.length) return;
+      out.push({
+        title: cat.emoji+' '+cat.label,
+        items: items.map(function(t){ return {text: (visibleLifeArea(t.tag)?visibleLifeArea(t.tag)+' · ':'')+t.text, done:t.done, meta:''}; })
+      });
+    });
+    return out;
+  }
+
+  function renderStatic(){
+    var sheet = document.getElementById('staticSheet');
+    var hasLists = listCats().length > 0;
+    var wrapEl = document.getElementById('includeListsWrap');
+    wrapEl.style.display = hasLists ? 'flex' : 'none';
+    document.getElementById('includeLists').checked = !!S.meta.includeLists;
+    var groups = listAsGroups(hasLists && S.meta.includeLists);
+    var d = new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    var name = (S.profile.name ? S.profile.name + "'s List" : 'My List') + ' · ' + d;
+
+    if(!groups.length){
+      sheet.innerHTML = '<h3>'+esc(name)+'</h3><p class="static-item">Nothing on the list yet.</p>';
+      return;
+    }
+    var html = '<h3>'+esc(name)+'</h3>';
+    groups.forEach(function(g){
+      html += '<div class="static-group"><p class="static-group-title">'+esc(g.title)+'</p>';
+      g.items.forEach(function(it){
+        html += '<div class="static-item'+(it.done?' done':'')+'">'+(it.done?'☑':'☐')+' '+esc(it.text)+
+                (it.meta ? ' <span style="opacity:.6">'+esc(it.meta)+'</span>' : '')+'</div>';
+      });
+      html += '</div>';
+    });
+    html += '<p class="static-note">Printed from Brain Dump &amp; Sort</p>';
+    sheet.innerHTML = html;
+  }
+
+  function listAsPlainText(){
+    var groups = listAsGroups(listCats().length > 0 && S.meta.includeLists);
+    var name = (S.profile.name ? S.profile.name + "'s List" : 'My List') + ' · ' +
+      new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    var lines = [name, ''];
+    groups.forEach(function(g){
+      lines.push(g.title.toUpperCase());
+      g.items.forEach(function(it){ lines.push('  ' + (it.done?'[x]':'[ ]') + ' ' + it.text + (it.meta?' ('+it.meta+')':'')); });
+      lines.push('');
+    });
+    return lines.join('\n');
+  }
+
+  function copyText(txt){
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(txt).then(function(){ toast('Copied to clipboard'); })
+        .catch(function(){ fallbackCopy(txt); });
+    } else fallbackCopy(txt);
+  }
+  document.getElementById('copyListBtn').addEventListener('click', function(){ copyText(listAsPlainText()); });
+  function fallbackCopy(txt){
+    var ta = document.createElement('textarea');
+    ta.value = txt; ta.style.position='fixed'; ta.style.opacity='0';
+    document.body.appendChild(ta); ta.select();
+    try{ document.execCommand('copy'); toast('Copied to clipboard'); }
+    catch(e){ toast('Copy failed, select the text manually'); }
+    ta.remove();
+  }
+  document.getElementById('includeLists').addEventListener('change', function(e){
+    S.meta.includeLists = e.target.checked;
+    persist();
+    renderStatic();
+    toast(e.target.checked ? 'Lists added to the printout' : 'Lists removed from the printout');
+  });
+  document.getElementById('printListBtn').addEventListener('click', function(){ window.print(); });
+
+  /* =========================================================
+     LISTS PANEL
+     A list is not a priority queue. Items wait, get checked off
+     somewhere else (a store), then get cleared in one sweep.
+     ========================================================= */
+  var listMode2 = 'interactive';
+  var activeListId = null;
+  var editingListItem = null;
+
+  function listItemsAll(){
+    var ids = listCats().map(function(c){ return c.id; });
+    return S.thoughts.filter(function(t){ return ids.indexOf(t.category) > -1; });
+  }
+  function itemsOfList(id){ return S.thoughts.filter(function(t){ return t.category===id; }); }
+  function activeList(){
+    var cats = listCats();
+    if(!cats.length) return null;
+    var found = cats.filter(function(c){ return c.id===activeListId; })[0];
+    if(found) return found;
+    activeListId = cats[0].id;
+    return cats[0];
+  }
+
+  document.getElementById('listModeInteractive').addEventListener('click', function(){ listMode2='interactive'; renderLists(); });
+  document.getElementById('listModeStatic').addEventListener('click', function(){ listMode2='static'; renderLists(); });
+
+  function addListItem(){
+    var cat = activeList();
+    if(!cat) return;
+    var input = document.getElementById('listInput');
+    var val = sentenceCase(input.value.trim());
+    if(!val) return;
+    S.thoughts.push({
+      id: uid('th'), text: val, tag: '', category: cat.id,
+      done:false, why:'you added it here', createdAt: now(), updatedAt: now()
+    });
+    S.meta.totalDumped++;
+    input.value=''; input.focus();
+    renderLists(); renderCloud(); updateNav(); persist();
+  }
+  document.getElementById('addListBtn').addEventListener('click', addListItem);
+  document.getElementById('listInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); addListItem(); } });
+
+  function renderListPicker(){
+    var wrap = document.getElementById('listPicker');
+    wrap.innerHTML='';
+    listCats().forEach(function(c){
+      var th = theme(c.themeId);
+      var open = itemsOfList(c.id).filter(function(t){ return !t.done; }).length;
+      var b = document.createElement('button');
+      b.className='list-pill'+(c.id===activeListId?' active':'');
+      if(c.id===activeListId){ b.style.background=th.text; b.style.borderColor=th.text; }
+      b.innerHTML = esc(c.emoji)+' '+esc(c.label)+'<span class="cnt">'+open+'</span>';
+      b.addEventListener('click', function(){ activeListId=c.id; editingListItem=null; renderLists(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderLists(){
+    document.getElementById('listModeInteractive').classList.toggle('active', listMode2==='interactive');
+    document.getElementById('listModeStatic').classList.toggle('active', listMode2==='static');
+    document.getElementById('listsInteractive').style.display = listMode2==='interactive' ? 'block' : 'none';
+    document.getElementById('listsStatic').style.display = listMode2==='static' ? 'block' : 'none';
+
+    var cat = activeList();
+    var addCard = document.getElementById('listAddCard');
+    if(!cat){
+      document.getElementById('listPicker').innerHTML='';
+      addCard.style.display='none';
+      document.getElementById('listsInteractive').innerHTML =
+        '<div class="card"><div class="habit-empty">You have no lists right now. Open Manage categories and add one with the behaviour set to "A list".</div></div>';
+      document.getElementById('shopSheet').innerHTML = '<p class="static-item">No lists yet.</p>';
+      return;
+    }
+    addCard.style.display='block';
+    document.getElementById('listInput').placeholder = 'Add to ' + cat.label;
+    renderListPicker();
+    if(listMode2==='interactive') renderListsInteractive(cat); else renderListsStatic(cat);
+  }
+
+  function renderListsInteractive(cat){
+    var wrap = document.getElementById('listsInteractive');
+    var th = theme(cat.themeId);
+    var items = itemsOfList(cat.id);
+    var done = items.filter(function(t){ return t.done; }).length;
+
+    var card = document.createElement('div');
+    card.className='card';
+    card.style.borderTop = '5px solid ' + th.text;
+    card.innerHTML =
+      '<div class="list-controls">'+
+        '<div><h2 style="margin-bottom:2px; color:'+th.text+'">'+esc(cat.emoji)+' '+esc(cat.label)+'</h2>'+
+        '<p class="desc" style="margin:0;">'+esc(cat.sub || 'Check things off as you go.')+'</p></div>'+
+        '<span class="zone-badge">'+done+'/'+items.length+'</span>'+
+      '</div>';
+
+    if(!items.length){
+      card.innerHTML += '<div class="habit-empty">Nothing on this list yet. Add something above, or dump it in step 1.</div>';
+      wrap.innerHTML=''; wrap.appendChild(card); return;
+    }
+
+    var body = document.createElement('div');
+    items.forEach(function(t){
+      var row = document.createElement('div');
+      row.className='shop-row'+(t.done?' done':'');
+
+      if(editingListItem === t.id){
+        row.innerHTML = '<input type="checkbox" '+(t.done?'checked':'')+' disabled>'+
+          '<input class="list-text-input" type="text" maxlength="140" value="'+esc(t.text)+'">'+
+          '<div class="row-tools"><button class="save-e" aria-label="Save">✔</button><button class="cancel-e" aria-label="Cancel">✕</button></div>';
+        var inp = row.querySelector('.list-text-input');
+        var commit = function(){
+          var v = inp.value.trim();
+          if(v){ t.text = sentenceCase(v); t.updatedAt = now(); persist(); }
+          editingListItem=null; renderLists();
+        };
+        row.querySelector('.save-e').addEventListener('click', commit);
+        row.querySelector('.cancel-e').addEventListener('click', function(){ editingListItem=null; renderLists(); });
+        inp.addEventListener('keydown', function(e){
+          if(e.key==='Enter'){ e.preventDefault(); commit(); }
+          if(e.key==='Escape'){ editingListItem=null; renderLists(); }
+        });
+        body.appendChild(row);
+        setTimeout(function(){ inp.focus(); inp.select(); }, 0);
+        return;
+      }
+
+      row.innerHTML =
+        '<input type="checkbox" '+(t.done?'checked':'')+' aria-label="Got it: '+esc(t.text)+'">'+
+        '<span class="shop-text" tabindex="0" role="button" title="Tap to edit">'+esc(t.text)+'</span>'+
+        '<div class="row-tools"><button class="rm" aria-label="Remove '+esc(t.text)+'">🗑</button></div>';
+      row.querySelector('input').addEventListener('change', function(e){
+        t.done = e.target.checked; t.updatedAt = now(); persist(); renderLists(); updateNav();
+      });
+      var edit = function(){ editingListItem = t.id; renderLists(); };
+      row.querySelector('.shop-text').addEventListener('click', edit);
+      row.querySelector('.shop-text').addEventListener('keydown', function(e){ if(e.key==='Enter') edit(); });
+      row.querySelector('.rm').addEventListener('click', function(){
+        S.thoughts = S.thoughts.filter(function(x){ return x.id!==t.id; });
+        persist(); renderLists(); renderCloud(); updateNav();
+      });
+      body.appendChild(row);
+    });
+    card.appendChild(body);
+
+    var foot = document.createElement('div');
+    foot.className='shop-foot';
+    foot.innerHTML = '<span style="font-size:12.5px; font-weight:700; color:var(--ink-soft);">'+
+      (done ? done+' checked off' : 'Nothing checked yet')+'</span>';
+    var btns = document.createElement('div');
+    btns.style.display='flex'; btns.style.gap='7px'; btns.style.flexWrap='wrap';
+    if(done){
+      var clr = document.createElement('button');
+      clr.className='ghost-btn'; clr.textContent='🧹 Clear '+done+' checked';
+      clr.addEventListener('click', function(){
+        if(!confirm('Remove the '+done+' checked item'+(done===1?'':'s')+' from '+cat.label+'? This is the sweep you do after a shop.')) return;
+        S.thoughts = S.thoughts.filter(function(x){ return !(x.category===cat.id && x.done); });
+        persist(); renderLists(); renderCloud(); updateNav(); toast('Cleared '+done);
+      });
+      btns.appendChild(clr);
+      var un = document.createElement('button');
+      un.className='ghost-btn'; un.textContent='↩ Uncheck all';
+      un.addEventListener('click', function(){
+        itemsOfList(cat.id).forEach(function(x){ x.done=false; });
+        persist(); renderLists(); updateNav();
+      });
+      btns.appendChild(un);
+    }
+    foot.appendChild(btns);
+    card.appendChild(foot);
+
+    wrap.innerHTML=''; wrap.appendChild(card);
+  }
+
+  function listSheetText(cat){
+    var items = itemsOfList(cat.id);
+    var d = new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    var lines = [cat.label + ' List · ' + d, ''];
+    items.forEach(function(t){ lines.push('  ' + (t.done?'[x]':'[ ]') + ' ' + t.text); });
+    if(!items.length) lines.push('  (empty)');
+    return lines.join('\n');
+  }
+
+  function renderListsStatic(cat){
+    var sheet = document.getElementById('shopSheet');
+    var items = itemsOfList(cat.id);
+    var d = new Date().toLocaleDateString(undefined, {weekday:'long', month:'long', day:'numeric', year:'numeric'});
+    var html = '<h3>'+esc(cat.emoji)+' '+esc(cat.label)+' List · '+esc(d)+'</h3>';
+    if(!items.length){
+      html += '<p class="static-item">Nothing on this list yet.</p>';
+    } else {
+      html += '<div class="static-group">';
+      items.forEach(function(t){
+        html += '<div class="static-item'+(t.done?' done':'')+'">'+(t.done?'☑':'☐')+' '+esc(t.text)+'</div>';
+      });
+      html += '</div>';
+      html += '<p class="static-note">'+items.length+' item'+(items.length===1?'':'s')+' · printed from Brain Dump &amp; Sort</p>';
+    }
+    sheet.innerHTML = html;
+  }
+
+  document.getElementById('copyShopBtn').addEventListener('click', function(){
+    var cat = activeList();
+    if(!cat) return;
+    copyText(listSheetText(cat));
+  });
+  document.getElementById('printShopBtn').addEventListener('click', function(){ window.print(); });
+
+  /* =========================================================
+     HABITS PANEL
+     ========================================================= */
+  document.getElementById('addHabitBtn').addEventListener('click', addHabit);
+  document.getElementById('habitInput').addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); addHabit(); } });
+  document.getElementById('showArchivedHabits').addEventListener('change', renderHabits);
+
+  function addHabit(){
+    var input = document.getElementById('habitInput');
+    var val = sentenceCase(input.value.trim());
+    if(!val) return;
+    S.habits.push({
+      id: uid('hb'), text: val, tag:'🔁 habit',
+      cadence: document.getElementById('habitCadence').value,
+      log:{}, createdAt: now(), startDate:todayKey(), endDate:'', archived:false
+    });
+    S.meta.totalDumped++;
+    input.value=''; input.focus();
+    renderHabits(); renderCloud(); persist();
+  }
+
+  function renderHabits(){
+    var wrap = document.getElementById('habitList');
+    wrap.innerHTML='';
+    var showArchivedHabits=document.getElementById('showArchivedHabits').checked;
+    var live = S.habits.filter(function(h){return showArchivedHabits || !h.archived;});
+    if(!live.length){
+      wrap.innerHTML = '<div class="card"><div class="habit-empty">No habits yet. Add one above, or type something like "meditate every morning" in step 1 and it lands here automatically.</div></div>';
+      return;
+    }
+    var today = new Date();
+    live.forEach(function(h){
+      var card = document.createElement('div');
+      card.className='habit-card';
+
+      var days = '';
+      for(var i=6;i>=0;i--){
+        var d = addDays(today,-i);
+        var k = dayKey(d);
+        var sched = isScheduled(h,d);
+        var cls = 'day-cell' + (h.log[k]?' done':'') + (i===0?' today':'') + (sched?'':' off');
+        days += '<button class="'+cls+'" data-k="'+k+'" aria-label="'+esc(d.toDateString())+(h.log[k]?', logged':', not logged')+'">'+
+                  '<div class="dow">'+DOW[d.getDay()]+'</div><div class="num">'+d.getDate()+'</div></button>';
+      }
+
+      var heat = '';
+      for(var j=27;j>=0;j--){
+        var hd = addDays(today,-j);
+        var hk = dayKey(hd);
+        var on = h.log[hk] ? ' on' : (isScheduled(h,hd) ? '' : ' off');
+        heat += '<span class="heat-dot'+on+'" title="'+esc(hk)+'"></span>';
+      }
+
+      card.innerHTML =
+        '<div class="habit-top">'+
+          '<span class="habit-name">'+esc(h.text)+(h.archived?' <span class="task-meta">Archived</span>':'')+'</span>'+
+          '<select class="habit-cadence-sel" aria-label="How often">'+
+            '<option value="daily"'+(h.cadence==='daily'?' selected':'')+'>Every day</option>'+
+            '<option value="weekdays"'+(h.cadence==='weekdays'?' selected':'')+'>Weekdays</option>'+
+            '<option value="weekly"'+(h.cadence==='weekly'?' selected':'')+'>Once a week</option>'+
+          '</select>'+
+          '<button class="mini archive-habit" aria-label="'+(h.archived?'Restore':'Archive')+' habit: '+esc(h.text)+'" title="'+(h.archived?'Restore habit':'Archive habit')+'">'+(h.archived?'↩':'📦')+'</button>'+
+          '<button class="mini rm-habit" aria-label="Delete habit: '+esc(h.text)+'" title="Delete permanently">🗑</button>'+
+        '</div>'+
+        '<div class="habit-dates"><label>Start <input class="habit-date-input habit-start" type="date" value="'+esc(h.startDate||'')+'"></label><label>End <input class="habit-date-input habit-end" type="date" value="'+esc(h.endDate||'')+'"></label></div>'+
+        '<div class="habit-stats">'+
+          '<div class="hstat"><div class="hstat-num">'+currentStreak(h)+'</div><div class="hstat-lbl">streak</div></div>'+
+          '<div class="hstat"><div class="hstat-num">'+bestStreak(h)+'</div><div class="hstat-lbl">best</div></div>'+
+          '<div class="hstat"><div class="hstat-num">'+last28Rate(h)+'%</div><div class="hstat-lbl">last 4 wks</div></div>'+
+        '</div>'+
+        '<div class="week-row">'+days+'</div>'+
+        '<div class="heat-row" title="Last 28 days">'+heat+'</div>';
+
+      Array.prototype.forEach.call(card.querySelectorAll('.day-cell'), function(cell){
+        cell.addEventListener('click', function(){ toggleHabitDay(h.id, cell.dataset.k); renderHabits(); });
+      });
+      card.querySelector('.habit-cadence-sel').addEventListener('change', function(e){ h.cadence = e.target.value; persist(); renderHabits(); });
+      card.querySelector('.habit-start').addEventListener('change', function(e){ h.startDate=e.target.value; persist(); });
+      card.querySelector('.habit-end').addEventListener('change', function(e){ h.endDate=e.target.value; persist(); });
+      card.querySelector('.archive-habit').addEventListener('click', function(){ h.archived=!h.archived; persist(); renderHabits(); renderCloud(); toast(h.archived?'Habit archived':'Habit restored'); });
+      card.querySelector('.rm-habit').addEventListener('click', function(){
+        if(!confirm('Delete "'+h.text+'"? Its streak history goes with it.')) return;
+        S.habits = S.habits.filter(function(x){return x.id!==h.id;});
+        persist(); renderHabits(); renderCloud();
+      });
+      wrap.appendChild(card);
+    });
+  }
+
+  /* =========================================================
+     PROFILE
+     ========================================================= */
+  var avatarOptions = ['🧑🏻','🧑🏼','🧑🏽','🧑🏾','🧑🏿','👩🏻','👩🏼','👩🏽','👩🏾','👩🏿','👨🏻','👨🏼','👨🏽','👨🏾','👨🏿','👩🏽‍🦱','🧑🏾‍🦰','🧑🏻‍🦳','🐶','🐕','🐩','🐱','🐻','🦊','🐨','🐼','🦁','🐸','🦋','🎨','📚','🎮','🎸','🏃🏽‍♀️','🧘🏾','🤖','🌟'];
+  var selectedAvatar = '🧑';
+
+  function updateGreeting(){
+    var el = document.getElementById('subGreeting');
+    el.textContent = S.profile.name
+      ? 'Hi ' + S.profile.name + ' ' + S.profile.avatar + ', dump it, sort it, do it.'
+      : 'Dump it. Sort it. Do it.';
+  }
+  function renderAvatarPicker(){
+    var wrap = document.getElementById('avatarPicker');
+    wrap.innerHTML='';
+    avatarOptions.forEach(function(a){
+      var btn = document.createElement('button');
+      btn.type='button';
+      btn.className='avatar-opt'+(a===selectedAvatar?' selected':'');
+      btn.textContent=a;
+      btn.setAttribute('aria-label','Avatar '+a);
+      btn.addEventListener('click', function(){ selectedAvatar=a; renderAvatarPicker(); });
+      wrap.appendChild(btn);
+    });
+  }
+
+  document.getElementById('openProfileBtn').addEventListener('click', function(){
+    document.getElementById('profileNameInput').value = S.profile.name;
+    selectedAvatar = S.profile.avatar;
+    renderAvatarPicker();
+    document.getElementById('statTotal').textContent = S.meta.totalDumped;
+    document.getElementById('statActive').textContent = S.thoughts.filter(function(t){return !t.done;}).length;
+    document.getElementById('statDone').textContent = S.thoughts.filter(function(t){return t.done;}).length;
+    document.getElementById('statHabits').textContent = S.habits.filter(function(h){return !h.archived;}).length;
+    var m = Store.getMode();
+    var lt = learnedTermCount();
+    document.getElementById('learnedNote').textContent = lt
+      ? 'It has picked up ' + lt + ' word' + (lt===1?'':'s') + ' from the times you moved something. It only acts on a word once it has seen it a few times and the pattern is consistent.'
+      : 'Nothing yet. Each time you move a thought to a different bucket, it notices the words involved.';
+    document.getElementById('storageNote').textContent =
+      m==='widget' ? 'Saved automatically to your Claude storage.' :
+      m==='local'  ? 'Saved automatically in this browser. Clearing site data wipes it, so download a backup now and then.' :
+                     'Storage is blocked here, so nothing survives closing the tab. Download a backup before you go.';
+    openModal('profileModal');
+  });
+  document.getElementById('saveProfileBtn').addEventListener('click', function(){
+    S.profile.name = document.getElementById('profileNameInput').value.trim();
+    S.profile.avatar = selectedAvatar;
+    updateGreeting(); persist(); closeModal('profileModal');
+    toast('Profile saved');
+  });
+
+  document.getElementById('forgetBtn').addEventListener('click', function(){
+    if(!learnedTermCount()){ toast('Nothing learned yet'); return; }
+    if(!confirm('Forget everything sorting has picked up from your corrections? Your thoughts, habits, and keywords all stay.')) return;
+    S.learned = {};
+    persist();
+    document.getElementById('learnedNote').textContent = 'Nothing yet. Each time you move a thought to a different bucket, it notices the words involved.';
+    toast('Cleared. Back to keywords and rules only.');
+  });
+
+  /* ---- export / import ---- */
+  document.getElementById('exportBtn').addEventListener('click', function(){
+    var blob = new Blob([JSON.stringify(S,null,2)], {type:'application/json'});
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'brain-dump-'+todayKey()+'.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function(){ URL.revokeObjectURL(a.href); }, 1000);
+    toast('Exported');
+  });
+  document.getElementById('importBtn').addEventListener('click', function(){ document.getElementById('importFile').click(); });
+  document.getElementById('importFile').addEventListener('change', function(e){
+    var f = e.target.files[0];
+    if(!f) return;
+    var r = new FileReader();
+    r.onload = function(){
+      var parsed;
+      try { parsed = JSON.parse(r.result); }
+      catch(err){ toast('That file is not valid JSON'); return; }
+      var next = migrate(parsed);
+      if(!next){ toast("Couldn't read that backup"); return; }
+      if(!confirm('Replace everything currently in the app with this file?')) return;
+      S = next;
+      renderAll(); persist(); closeModal('profileModal');
+      toast('Imported');
+    };
+    r.readAsText(f);
+    e.target.value='';
+  });
+
+  /* =========================================================
+     MODALS
+     ========================================================= */
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+  Array.prototype.forEach.call(document.querySelectorAll('.modal-close'), function(btn){
+    btn.addEventListener('click', function(){ closeModal(btn.dataset.close); });
+  });
+  Array.prototype.forEach.call(document.querySelectorAll('.modal-overlay'), function(ov){
+    ov.addEventListener('click', function(e){ if(e.target===ov) ov.classList.remove('open'); });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape'){
+      Array.prototype.forEach.call(document.querySelectorAll('.modal-overlay.open'), function(ov){ ov.classList.remove('open'); });
+    }
+  });
+
+  /* =========================================================
+     CATEGORY ADMIN
+     ========================================================= */
+  var editingCatId = null;
+  var selectedThemeId = COLOR_THEMES[0].id;
+
+  function renderThemeSwatches(){
+    var wrap = document.getElementById('themeSwatches');
+    wrap.innerHTML='';
+    COLOR_THEMES.forEach(function(th){
+      var b = document.createElement('button');
+      b.type='button';
+      b.className='theme-dot'+(th.id===selectedThemeId?' selected':'');
+      b.style.background = th.border;
+      b.setAttribute('aria-label','Color '+th.id);
+      b.addEventListener('click', function(){ selectedThemeId = th.id; renderThemeSwatches(); });
+      wrap.appendChild(b);
+    });
+  }
+
+  function renderCatList(){
+    var list = document.getElementById('catList');
+    list.innerHTML='';
+    S.categories.forEach(function(cat){
+      var th = theme(cat.themeId);
+      var row = document.createElement('div');
+      row.className='cat-row';
+      row.style.background = th.bg;
+      row.style.color = th.text;
+      row.innerHTML =
+        '<span class="swatch" style="background:'+th.text+'"></span>'+
+        '<span class="lbl">'+esc(cat.emoji)+' '+esc(cat.label)+'</span>'+
+        (kindOf(cat)!=='priority' ? '<span class="kind-tag">'+esc(kindOf(cat))+'</span>' : '')+
+        '<button class="edit-cat" aria-label="Edit '+esc(cat.label)+'">✏️</button>'+
+        '<button class="del-cat" aria-label="Delete '+esc(cat.label)+'">🗑️</button>';
+      row.querySelector('.edit-cat').addEventListener('click', function(){ startEditCategory(cat.id); });
+      row.querySelector('.del-cat').addEventListener('click', function(){ removeCategory(cat.id); });
+      list.appendChild(row);
+    });
+  }
+
+  function resetCatForm(){
+    editingCatId = null;
+    document.getElementById('catEmojiInput').value='';
+    document.getElementById('catLabelInput').value='';
+    document.getElementById('catSubInput').value='';
+    document.getElementById('catKeywordsInput').value='';
+    document.getElementById('catKindSelect').value='priority';
+    document.getElementById('catFormError').style.display='none';
+    selectedThemeId = COLOR_THEMES[S.categories.length % COLOR_THEMES.length].id;
+    renderThemeSwatches();
+    document.getElementById('saveCatBtn').textContent='Add category';
+  }
+
+  function startEditCategory(id){
+    var cat = findCat(id);
+    if(!cat) return;
+    editingCatId = id;
+    document.getElementById('catEmojiInput').value = cat.emoji;
+    document.getElementById('catLabelInput').value = cat.label;
+    document.getElementById('catSubInput').value = cat.sub || '';
+    document.getElementById('catKeywordsInput').value = cat.keywords.join(', ');
+    document.getElementById('catKindSelect').value = cat.kind || 'priority';
+    document.getElementById('catFormError').style.display='none';
+    selectedThemeId = cat.themeId;
+    renderThemeSwatches();
+    document.getElementById('saveCatBtn').textContent='Save changes';
+  }
+
+  function showCatError(msg){
+    var e = document.getElementById('catFormError');
+    e.textContent = msg; e.style.display='block';
+  }
+
+  var emojiChoices=['🔥','⭐','⚡','🔁','🛒','🛍️','⏳','🅿️','💼','🏠','🎯','❤️','🐶','🐱','📚','🎨','🎮','✈️','💰','📝','🌱','🤖'];
+  (function(){ var w=document.getElementById('emojiPresets'); emojiChoices.forEach(function(em){ var b=document.createElement('button'); b.type='button'; b.className='emoji-preset'; b.textContent=em; b.addEventListener('click',function(){document.getElementById('catEmojiInput').value=em;}); w.appendChild(b); }); })();
+
+  document.getElementById('saveCatBtn').addEventListener('click', function(){
+    var label = document.getElementById('catLabelInput').value.trim();
+    if(!label){ showCatError('Give it a name first.'); return; }
+    var kind = document.getElementById('catKindSelect').value;
+    document.getElementById('catFormError').style.display='none';
+
+    var emoji = document.getElementById('catEmojiInput').value.trim() || '🏷️';
+    var sub = document.getElementById('catSubInput').value.trim();
+    var keywords = document.getElementById('catKeywordsInput').value.split(',')
+      .map(function(s){return s.trim().toLowerCase();}).filter(function(s){return s.length>0;});
+
+    if(editingCatId){
+      var cat = findCat(editingCatId);
+      var wasKind = cat.kind;
+      cat.emoji=emoji; cat.label=label; cat.sub=sub; cat.themeId=selectedThemeId; cat.keywords=keywords; cat.kind=kind;
+      if(wasKind!=='habit' && kind==='habit'){
+        // everything sitting in this bucket becomes a habit
+        S.thoughts.filter(function(t){return t.category===cat.id;}).slice().forEach(function(t){ thoughtToHabit(t.id); });
+      }
+    } else {
+      S.categories.push({id:uid('cat'), label:label, emoji:emoji, sub:sub, themeId:selectedThemeId, keywords:keywords, kind:kind});
+    }
+    resetCatForm(); renderCatList(); renderAll(); persist();
+    toast('Categories updated');
+  });
+
+  function removeCategory(id){
+    var priorities = priorityCats();
+    var cat = findCat(id);
+    if(!cat) return;
+    if(cat.kind!=='habit' && priorities.length<=1){ alert("You need at least one priority bucket, so this one has to stay."); return; }
+    var msg = cat.kind==='habit'
+      ? 'Delete "'+cat.label+'"? Your habits stay in the Habits tab, they just lose their zone here.'
+      : 'Delete "'+cat.label+'"? Anything in it goes back to Needs a home.';
+    if(!confirm(msg)) return;
+    S.categories = S.categories.filter(function(c){ return c.id!==id; });
+    S.thoughts.forEach(function(t){ if(t.category===id) t.category = null; });
+    if(editingCatId===id) resetCatForm();
+    renderCatList(); renderAll(); persist();
+  }
+
+  document.getElementById('resetCatsBtn').addEventListener('click', function(){
+    if(!confirm('Reset to the default categories? Custom ones are removed. Your thoughts and habits stay.')) return;
+    S.categories = seedCategories();
+    S.thoughts.forEach(function(t){ if(t.category && !findCat(t.category)) t.category = null; });
+    resetCatForm(); renderCatList(); renderAll(); persist();
+  });
+
+  document.getElementById('openGuideBtn').addEventListener('click', function(){
+    renderLegend('guideLegend');
+    openModal('guideModal');
+  });
+
+  document.getElementById('openAdminBtn').addEventListener('click', function(){
+    resetCatForm(); renderCatList(); openModal('adminModal');
+  });
+
+  /* =========================================================
+     BOOT
+     ========================================================= */
+  function renderAll(){
+    updateGreeting();
+    renderCloud();
+    updateNav();
+    if(activeTab==='sort') renderSort();
+    if(activeTab==='list') renderList();
+    if(activeTab==='lists') renderLists();
+    if(activeTab==='habits') renderHabits();
+  }
+
+  showTip(); showQuote();
+
+  Store.load(function(saved){
+    var restored = migrate(saved);
+    if(restored){ S = restored; }
+    setSaveStatus('saved');
+    renderAll();
+    if(restored && (S.thoughts.length || S.habits.length)){
+      toast('Welcome back. Picked up where you left off.');
+    }
+  });
+})();
+</script>
+</body>
+</html>
